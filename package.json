@@ -1,0 +1,20 @@
+{
+  "name": "vue-console-pulg",
+  "version": "0.0.1",
+  "description": "vue 日志监控插件",
+  "main": "./src/ConsolePulg.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.zhijiasoft.com/zhangyunshan/vue-console-pulg.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "typings": "types/index.d.ts",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "vue": "^2.6.12"
+  }
+}
