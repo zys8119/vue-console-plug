@@ -15,7 +15,7 @@ export interface ConsolePulgConfig <K extends keyof WindowEventMap>{
     // 是否捕捉console映射, 默认监听只error
     consoleMap?:Array<string | 'error' | 'assert' | 'clear' | 'count' | 'countReset' | 'debug' | 'dir' | 'dirxml' | 'exception' | 'group' | 'groupCollapsed' | 'groupEnd' | 'info' | 'log' | 'table' | 'time' | 'timeEnd' | 'timeLog' | 'timeStamp' | 'trace' | 'warn'>;
     eventMap?:Array<K>;// 是否捕捉addEventListener事件映射, 默认监听只error
-    rules?:Array<(this:PluginObjectClass,data:MessageData)=>boolean>;// 返回true即上报，反之不上报
+    rules?:Array<(this:PluginObjectClass,data:MessageData)=>boolean>;// 返回false即上报，反之不上报
 }
 
 export interface MessageData {
