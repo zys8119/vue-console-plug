@@ -224,7 +224,8 @@ class PluginObjectClass{
             if(!this.config.AxiosConfig ||
             !this.config.AxiosConfig.url ||
             !this.config.AxiosConfig.method){
-                return;
+                // @ts-ignore
+                return Promise.resolve();
             }
             // @ts-ignore
             if(["XHL_Success", "XHL","XHL_Error","XHL_Success_Error"].includes(type)){
@@ -232,7 +233,8 @@ class PluginObjectClass{
                     this.config.AxiosConfig.method.toLocaleLowerCase() === errorData.openArgs[0].toLocaleLowerCase() &&
                     errorData.openArgs[1].toLocaleLowerCase().indexOf(this.config.AxiosConfig.url.toLocaleLowerCase()) > -1
                 ){
-                    return ;
+                    // @ts-ignore
+                    return Promise.resolve();
                 }
             }
             let data:MessageData = {
