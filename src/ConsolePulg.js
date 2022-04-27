@@ -114,6 +114,12 @@ var PluginObjectClass = /** @class */ (function () {
                 window.XMLHttpRequest = function () {
                     // @ts-ignore
                     var XHL = new (XMLHttpRequestOld_1.bind.apply(XMLHttpRequestOld_1, __spreadArray([void 0], arguments, false)))();
+                    try {
+                        throw Error("Stack");
+                    }
+                    catch (e) {
+                        XHL.stack = e.stack;
+                    }
                     XHL.addEventListener("load", function (res) {
                         var XHL_Info = _this_1.getXHLMessageData(res, XHL);
                         if (res.target.status >= 200 && res.target.status < 300) {
@@ -163,7 +169,8 @@ var PluginObjectClass = /** @class */ (function () {
                 bodyData: XHL.bodyData,
                 openArgs: XHL.openArgs,
                 responseHeaders: XHL.getAllResponseHeaders(),
-                requestHeaders: XHL.requestHeaders
+                requestHeaders: XHL.requestHeaders,
+                stack: XHL.stack
             };
         }
         catch (e) {
@@ -294,6 +301,12 @@ var PluginObjectClass = /** @class */ (function () {
             }
             // @ts-ignore
             return new Promise(function (resolve) {
+                try {
+                    throw Error("Stack");
+                }
+                catch (e) {
+                    data_1.stack = e.stack;
+                }
                 _this_1.config.getCustomData.call(_this_1, data_1).then(function (config) {
                     config = config || {};
                     (0, axios_1["default"])(__assign(__assign(__assign({}, _this_1.config.AxiosConfig), { data: data_1 }), config)).then(function (res) {

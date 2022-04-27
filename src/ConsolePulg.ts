@@ -28,6 +28,7 @@ export interface MessageData {
     cookie:string;// cookie数据
     errorDataOrigin:any;// 错误源数据
     system?:MessageDataSystem;// 系统信息
+    stack?:string;// 错误代码跟踪
 }
 
 export interface MessageDataSystem{
@@ -160,6 +161,11 @@ class PluginObjectClass{
                 window.XMLHttpRequest = function (){
                     // @ts-ignore
                     let XHL:any = new XMLHttpRequestOld(...arguments);
+                    try {
+                        throw Error("Stack")
+                    }catch (e){
+                        XHL.stack = e.stack
+                    }
                     XHL.addEventListener("load",(res:any)=>{
                         const XHL_Info = _this.getXHLMessageData(res,XHL)
                         if (res.target.status >= 200 && res.target.status <  300 ){
@@ -209,6 +215,7 @@ class PluginObjectClass{
                 openArgs:XHL.openArgs,
                 responseHeaders:XHL.getAllResponseHeaders(),
                 requestHeaders:XHL.requestHeaders,
+                stack:XHL.stack
             }
         }catch (e){
             return  {};
@@ -345,6 +352,11 @@ class PluginObjectClass{
             }
             // @ts-ignore
             return new Promise(resolve => {
+                try {
+                   throw Error("Stack")
+                }catch (e){
+                    data.stack = e.stack
+                }
                 this.config.getCustomData.call(this, data).then(config=>{
                     config = config || {};
                     axios({
