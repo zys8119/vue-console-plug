@@ -1,4 +1,3 @@
-import { PluginObject } from "vue"
 import axios, { AxiosRequestConfig } from "axios"
 
 export interface ConsolePulgConfig <K extends keyof WindowEventMap>{
@@ -54,7 +53,7 @@ export type userAgentDataBrands = {
     version:string;
 }
 
-const ConsolePulg:PluginObject<any> = {
+const ConsolePulg= {
     install(Vue,options = {}){
         // @ts-ignore
         window.$ConsolePluginObjectClass = new PluginObjectClass(Vue, options);

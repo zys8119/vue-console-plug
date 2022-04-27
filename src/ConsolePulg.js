@@ -10,14 +10,16 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var axios_1 = require("axios");
 var ConsolePulg = {
     install: function (Vue, options) {
@@ -26,7 +28,7 @@ var ConsolePulg = {
         window.$ConsolePluginObjectClass = new PluginObjectClass(Vue, options);
     }
 };
-exports.default = ConsolePulg;
+exports["default"] = ConsolePulg;
 var PluginObjectClass = /** @class */ (function () {
     function PluginObjectClass(Vue, options) {
         this.config = {};
@@ -58,7 +60,7 @@ var PluginObjectClass = /** @class */ (function () {
                     var errorOldFun = window.console[keyName];
                     window.console[keyName] = function () {
                         var args = arguments;
-                        _this_1.onMessage(args, "console." + keyName).then(function () {
+                        _this_1.onMessage(args, "console.".concat(keyName)).then(function () {
                             errorOldFun.apply(null, args);
                         });
                     };
@@ -71,7 +73,7 @@ var PluginObjectClass = /** @class */ (function () {
             this.config.eventMap.forEach(function (keyName) {
                 (function (keyName) {
                     window.addEventListener(keyName, function (e) {
-                        _this_1.onMessage(e, keyName + " of type WindowEventMap");
+                        _this_1.onMessage(e, "".concat(keyName, " of type WindowEventMap"));
                     }, true);
                 })(keyName);
             });
@@ -87,7 +89,7 @@ var PluginObjectClass = /** @class */ (function () {
                 XMLHttpRequestOld_1.prototype.open = function () {
                     this.openArgs = arguments;
                     // @ts-ignore
-                    XMLHttpRequestOld_open_1.call.apply(XMLHttpRequestOld_open_1, __spreadArrays([this], arguments));
+                    XMLHttpRequestOld_open_1.call.apply(XMLHttpRequestOld_open_1, __spreadArray([this], arguments, false));
                 };
                 /**
                  * @send
@@ -106,12 +108,12 @@ var PluginObjectClass = /** @class */ (function () {
                     this.requestHeaders = this.requestHeaders || {};
                     this.requestHeaders[key] = value;
                     // @ts-ignore
-                    XMLHttpRequestOld_setRequestHeader_1.call.apply(XMLHttpRequestOld_setRequestHeader_1, __spreadArrays([this], arguments));
+                    XMLHttpRequestOld_setRequestHeader_1.call.apply(XMLHttpRequestOld_setRequestHeader_1, __spreadArray([this], arguments, false));
                 };
                 // @ts-ignore
                 window.XMLHttpRequest = function () {
                     // @ts-ignore
-                    var XHL = new (XMLHttpRequestOld_1.bind.apply(XMLHttpRequestOld_1, __spreadArrays([void 0], arguments)))();
+                    var XHL = new (XMLHttpRequestOld_1.bind.apply(XMLHttpRequestOld_1, __spreadArray([void 0], arguments, false)))();
                     XHL.addEventListener("load", function (res) {
                         var XHL_Info = _this_1.getXHLMessageData(res, XHL);
                         if (res.target.status >= 200 && res.target.status < 300) {
@@ -156,12 +158,12 @@ var PluginObjectClass = /** @class */ (function () {
                     withCredentials: res.target.withCredentials,
                     status: res.target.status,
                     statusText: res.target.statusText,
-                    type: res.type,
+                    type: res.type
                 },
                 bodyData: XHL.bodyData,
                 openArgs: XHL.openArgs,
                 responseHeaders: XHL.getAllResponseHeaders(),
-                requestHeaders: XHL.requestHeaders,
+                requestHeaders: XHL.requestHeaders
             };
         }
         catch (e) {
@@ -196,7 +198,7 @@ var PluginObjectClass = /** @class */ (function () {
                 pageTitle: document.title,
                 sessionStorage: window.sessionStorage,
                 localStorage: window.localStorage,
-                cookie: window.document.cookie,
+                cookie: window.document.cookie
             };
             try {
                 data_1.system = {
@@ -209,7 +211,7 @@ var PluginObjectClass = /** @class */ (function () {
                     productSub: window.navigator.productSub,
                     vendor: window.navigator.vendor,
                     onLine: window.navigator.onLine,
-                    language: window.navigator.language,
+                    language: window.navigator.language
                 };
                 if (this.config.userAgentData) {
                     try {
@@ -222,7 +224,7 @@ var PluginObjectClass = /** @class */ (function () {
                         data_1.system.userAgentData = {
                             mobile: userAgentData.mobile,
                             // @ts-ignore
-                            brands: brands,
+                            brands: brands
                         };
                     }
                     catch (e) {
@@ -235,15 +237,15 @@ var PluginObjectClass = /** @class */ (function () {
             switch (Object.prototype.toString.call(errorData)) {
                 case "[object Event]":
                     data_1.errorData = __assign(__assign({}, data_1.errorData), { timeStamp: data_1.errorData.timeStamp, type: data_1.errorData.type, path: data_1.errorData.path.map(function (el) {
-                            return "\u3010tagName\u3011" + (el.tagName || "").toLocaleLowerCase() + "->\u3010class\u3011" + el.className + "->\u3010id\u3011" + el.id;
+                            return "\u3010tagName\u3011".concat((el.tagName || "").toLocaleLowerCase(), "->\u3010class\u3011").concat(el.className, "->\u3010id\u3011").concat(el.id);
                         }), message: data_1.errorData.message, error: data_1.errorData.error, toStringType: "[object Event]" });
                     break;
                 case "[object Arguments]":
                     data_1.errorData = {};
-                    (__spreadArrays(errorData)).forEach(function (it, k) {
+                    (__spreadArray([], errorData, true)).forEach(function (it, k) {
                         var dataObj = {
                             toStringType: "[object Arguments]",
-                            error: null,
+                            error: null
                         };
                         try {
                             dataObj.error = it.error || it.stack || it;
@@ -257,26 +259,26 @@ var PluginObjectClass = /** @class */ (function () {
                 case "[object Object]":
                     data_1.errorData = {
                         data: errorData,
-                        toStringType: "[object Object]",
+                        toStringType: "[object Object]"
                     };
                     break;
                 case "[object PromiseRejectionEvent]":
                     data_1.errorData = {
                         data: errorData.reason,
-                        toStringType: "[object PromiseRejectionEvent]",
+                        toStringType: "[object PromiseRejectionEvent]"
                     };
                     break;
                 default:
                     try {
                         data_1.errorData = {
                             data: JSON.stringify(errorData),
-                            toStringType: "[object default]",
+                            toStringType: "[object default]"
                         };
                     }
                     catch (e) {
                         data_1.errorData = {
                             data: errorData,
-                            toStringType: "[object default]",
+                            toStringType: "[object default]"
                         };
                     }
                     break;
@@ -293,12 +295,12 @@ var PluginObjectClass = /** @class */ (function () {
             return new Promise(function (resolve) {
                 _this_1.config.getCustomData.call(_this_1, data_1).then(function (config) {
                     config = config || {};
-                    axios_1.default(__assign(__assign(__assign({}, _this_1.config.AxiosConfig), { data: data_1 }), config)).then(function (res) {
+                    (0, axios_1["default"])(__assign(__assign(__assign({}, _this_1.config.AxiosConfig), { data: data_1 }), config)).then(function (res) {
                         resolve();
-                    }).catch(function () {
+                    })["catch"](function () {
                         resolve();
                     });
-                }).catch(function () {
+                })["catch"](function () {
                     resolve();
                 });
             });
