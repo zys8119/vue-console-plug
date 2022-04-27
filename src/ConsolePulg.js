@@ -198,7 +198,8 @@ var PluginObjectClass = /** @class */ (function () {
                 pageTitle: document.title,
                 sessionStorage: window.sessionStorage,
                 localStorage: window.localStorage,
-                cookie: window.document.cookie
+                cookie: window.document.cookie,
+                errorDataOrigin: errorData
             };
             try {
                 data_1.system = {

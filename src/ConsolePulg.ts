@@ -26,6 +26,7 @@ export interface MessageData {
     sessionStorage:any;// 缓存数据
     localStorage:any;// 缓存数据
     cookie:string;// cookie数据
+    errorDataOrigin:any;// 错误源数据
     system?:MessageDataSystem;// 系统信息
 }
 
@@ -244,6 +245,7 @@ class PluginObjectClass{
                 sessionStorage:window.sessionStorage,
                 localStorage:window.localStorage,
                 cookie:window.document.cookie,
+                errorDataOrigin:errorData
             }
             try {
                 data.system = <MessageDataSystem>{
