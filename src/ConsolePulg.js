@@ -35,14 +35,14 @@ var PluginObjectClass = /** @class */ (function () {
         try {
             this.config = __assign({ 
                 // 默认不进行上报，需要配置上报服务器地址信息
-                AxiosConfig: {}, XHL_Success: true, XHL_Success_Error: true, XHL_Error: true, userAgentData: true, system: true, XMLHttpRequest: true, console: true, consoleMap: ["error"], eventMap: ["error", "messageerror", "unhandledrejection", "rejectionhandled"], getCustomData: function () {
+                AxiosConfig: {}, XHL_Success: true, XHL_Success_Error: true, XHL_Error: true, userAgentData: true, system: true, XMLHttpRequest: true, console: true, consoleMap: ['error'], eventMap: ['error', 'messageerror', 'unhandledrejection', 'rejectionhandled'], getCustomData: function () {
                     // @ts-ignore
                     return Promise.resolve();
                 }, rules: null }, options);
             this.initErrorMonitor();
         }
         catch (e) {
-            console.error("ConsolePulg", e);
+            console.error('ConsolePulg', e);
         }
     }
     /**
@@ -51,7 +51,7 @@ var PluginObjectClass = /** @class */ (function () {
     PluginObjectClass.prototype.initErrorMonitor = function () {
         try {
             var _this_1 = this;
-            this.onMessage(null, "PV");
+            this.onMessage(null, 'PV');
             /**
              * console
              */
@@ -59,10 +59,14 @@ var PluginObjectClass = /** @class */ (function () {
             this.config.consoleMap.forEach(function (keyName) {
                 (function (keyName) {
                     var errorOldFun = window.console[keyName];
+                    // @ts-ignore
                     window.console[keyName] = function () {
-                        var args = arguments;
+                        var args = [];
+                        for (var _i = 0; _i < arguments.length; _i++) {
+                            args[_i] = arguments[_i];
+                        }
                         _this_1.onMessage(args, "console.".concat(keyName)).then(function () {
-                            errorOldFun.apply(null, args);
+                            errorOldFun.apply(void 0, args);
                         });
                     };
                 })(keyName);
@@ -92,9 +96,13 @@ var PluginObjectClass = /** @class */ (function () {
                  */
                 var XMLHttpRequestOld_open_1 = XMLHttpRequestOld_1.prototype.open;
                 XMLHttpRequestOld_1.prototype.open = function () {
-                    this.openArgs = arguments;
+                    var args = [];
+                    for (var _i = 0; _i < arguments.length; _i++) {
+                        args[_i] = arguments[_i];
+                    }
+                    this.openArgs = args;
                     // @ts-ignore
-                    XMLHttpRequestOld_open_1.call.apply(XMLHttpRequestOld_open_1, __spreadArray([this], arguments, false));
+                    XMLHttpRequestOld_open_1.call.apply(XMLHttpRequestOld_open_1, __spreadArray([this], args, false));
                 };
                 /**
                  * @send
@@ -110,39 +118,47 @@ var PluginObjectClass = /** @class */ (function () {
                  */
                 var XMLHttpRequestOld_setRequestHeader_1 = XMLHttpRequestOld_1.prototype.setRequestHeader;
                 XMLHttpRequestOld_1.prototype.setRequestHeader = function (key, value) {
+                    var args = [];
+                    for (var _i = 2; _i < arguments.length; _i++) {
+                        args[_i - 2] = arguments[_i];
+                    }
                     this.requestHeaders = this.requestHeaders || {};
                     this.requestHeaders[key] = value;
                     // @ts-ignore
-                    XMLHttpRequestOld_setRequestHeader_1.call.apply(XMLHttpRequestOld_setRequestHeader_1, __spreadArray([this], arguments, false));
+                    XMLHttpRequestOld_setRequestHeader_1.call.apply(XMLHttpRequestOld_setRequestHeader_1, __spreadArray([this, key, value], args, false));
                 };
                 // @ts-ignore
                 window.XMLHttpRequest = function () {
+                    var args = [];
+                    for (var _i = 0; _i < arguments.length; _i++) {
+                        args[_i] = arguments[_i];
+                    }
                     // @ts-ignore
-                    var XHL = new (XMLHttpRequestOld_1.bind.apply(XMLHttpRequestOld_1, __spreadArray([void 0], arguments, false)))();
+                    var XHL = new (XMLHttpRequestOld_1.bind.apply(XMLHttpRequestOld_1, __spreadArray([void 0], args, false)))();
                     try {
-                        throw Error("Stack");
+                        throw Error('Stack');
                     }
                     catch (e) {
                         XHL.stack = e.stack;
                     }
-                    XHL.addEventListener("load", function (res) {
+                    XHL.addEventListener('load', function (res) {
                         var XHL_Info = _this_1.getXHLMessageData(res, XHL);
                         if (res.target.status >= 200 && res.target.status < 300) {
                             // 正常响应
                             if (_this_1.config.XHL_Success) {
-                                _this_1.onMessage(XHL_Info, "XHL_Success");
+                                _this_1.onMessage(XHL_Info, 'XHL_Success');
                             }
                         }
                         else {
                             // 非正常响应
                             if (_this_1.config.XHL_Success_Error) {
-                                _this_1.onMessage(XHL_Info, "XHL_Success_Error");
+                                _this_1.onMessage(XHL_Info, 'XHL_Success_Error');
                             }
                         }
                     });
-                    XHL.addEventListener("error", function (res) {
+                    XHL.addEventListener('error', function (res) {
                         if (_this_1.config.XHL_Error) {
-                            _this_1.onMessage(_this_1.getXHLMessageData(res, XHL), "XHL_Error");
+                            _this_1.onMessage(_this_1.getXHLMessageData(res, XHL), 'XHL_Error');
                         }
                     });
                     return XHL;
@@ -150,7 +166,7 @@ var PluginObjectClass = /** @class */ (function () {
             }
         }
         catch (e) {
-            console.error("ConsolePulg", e);
+            console.error('ConsolePulg', e);
         }
     };
     /**
@@ -196,7 +212,7 @@ var PluginObjectClass = /** @class */ (function () {
                 return Promise.resolve();
             }
             // @ts-ignore
-            if (["XHL_Success", "XHL", "XHL_Error", "XHL_Success_Error"].includes(type)) {
+            if (['XHL_Success', 'XHL', 'XHL_Error', 'XHL_Success_Error'].includes(type)) {
                 if (this.config.AxiosConfig.method.toLocaleLowerCase() === errorData.openArgs[0].toLocaleLowerCase() &&
                     errorData.openArgs[1].toLocaleLowerCase().indexOf(this.config.AxiosConfig.url.toLocaleLowerCase()) > -1) {
                     // @ts-ignore
@@ -241,23 +257,24 @@ var PluginObjectClass = /** @class */ (function () {
                         };
                     }
                     catch (e) {
+                        // err
                     }
                 }
             }
             catch (e) {
-                console.log("navigator 错误");
+                console.log('navigator 错误');
             }
             switch (Object.prototype.toString.call(errorData)) {
-                case "[object Event]":
+                case '[object Event]':
                     data_1.errorData = __assign(__assign({}, data_1.errorData), { timeStamp: data_1.errorData.timeStamp, type: data_1.errorData.type, path: data_1.errorData.path.map(function (el) {
-                            return "\u3010tagName\u3011".concat((el.tagName || "").toLocaleLowerCase(), "->\u3010class\u3011").concat(el.className, "->\u3010id\u3011").concat(el.id);
-                        }), message: data_1.errorData.message, error: data_1.errorData.error, toStringType: "[object Event]" });
+                            return "\u3010tagName\u3011".concat((el.tagName || '').toLocaleLowerCase(), "->\u3010class\u3011").concat(el.className, "->\u3010id\u3011").concat(el.id);
+                        }), message: data_1.errorData.message, error: data_1.errorData.error, toStringType: '[object Event]' });
                     break;
-                case "[object Arguments]":
+                case '[object Arguments]':
                     data_1.errorData = {};
                     (__spreadArray([], errorData, true)).forEach(function (it, k) {
                         var dataObj = {
-                            toStringType: "[object Arguments]",
+                            toStringType: '[object Arguments]',
                             error: null
                         };
                         try {
@@ -266,32 +283,32 @@ var PluginObjectClass = /** @class */ (function () {
                         catch (e) {
                             dataObj.error = it;
                         }
-                        data_1.errorData["error_" + k] = dataObj;
+                        data_1.errorData['error_' + k] = dataObj;
                     });
                     break;
-                case "[object Object]":
+                case '[object Object]':
                     data_1.errorData = {
                         data: errorData,
-                        toStringType: "[object Object]"
+                        toStringType: '[object Object]'
                     };
                     break;
-                case "[object PromiseRejectionEvent]":
+                case '[object PromiseRejectionEvent]':
                     data_1.errorData = {
                         data: errorData.reason,
-                        toStringType: "[object PromiseRejectionEvent]"
+                        toStringType: '[object PromiseRejectionEvent]'
                     };
                     break;
                 default:
                     try {
                         data_1.errorData = {
                             data: JSON.stringify(errorData),
-                            toStringType: "[object default]"
+                            toStringType: '[object default]'
                         };
                     }
                     catch (e) {
                         data_1.errorData = {
                             data: errorData,
-                            toStringType: "[object default]"
+                            toStringType: '[object default]'
                         };
                     }
                     break;
@@ -306,13 +323,14 @@ var PluginObjectClass = /** @class */ (function () {
             }
             // @ts-ignore
             return new Promise(function (resolve) {
+                var _a;
                 try {
-                    throw Error("Stack");
+                    throw Error('Stack');
                 }
                 catch (e) {
                     data_1.stack = e.stack;
                 }
-                _this_1.config.getCustomData.call(_this_1, data_1).then(function (config) {
+                (_a = _this_1.config.getCustomData) === null || _a === void 0 ? void 0 : _a.call(_this_1, data_1).then(function (config) {
                     config = config || {};
                     (0, axios_1["default"])(__assign(__assign(__assign({}, _this_1.config.AxiosConfig), { data: data_1 }), config)).then(function (res) {
                         resolve();
