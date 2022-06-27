@@ -98,6 +98,7 @@ class PluginObjectClass{
     initErrorMonitor(){
         try {
             let _this = this;
+            this.onMessage(null, "PV");
             /**
              * console
              */
@@ -119,8 +120,12 @@ class PluginObjectClass{
             // @ts-ignore
             this.config.eventMap.forEach((keyName:string)=>{
                 (function (keyName){
-                    window.addEventListener(keyName, (e)=>{
-                        _this.onMessage(e,`${keyName} of type WindowEventMap`);
+                    window.addEventListener(keyName, (event:any)=>{
+                        _this.onMessage({
+                            event,
+                            message:event?.message,
+                            stack:event?.stack
+                        },`${keyName} of type WindowEventMap`);
                     }, true);
                 })(keyName)
             })

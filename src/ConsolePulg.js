@@ -51,6 +51,7 @@ var PluginObjectClass = /** @class */ (function () {
     PluginObjectClass.prototype.initErrorMonitor = function () {
         try {
             var _this_1 = this;
+            this.onMessage(null, "PV");
             /**
              * console
              */
@@ -72,8 +73,12 @@ var PluginObjectClass = /** @class */ (function () {
             // @ts-ignore
             this.config.eventMap.forEach(function (keyName) {
                 (function (keyName) {
-                    window.addEventListener(keyName, function (e) {
-                        _this_1.onMessage(e, "".concat(keyName, " of type WindowEventMap"));
+                    window.addEventListener(keyName, function (event) {
+                        _this_1.onMessage({
+                            event: event,
+                            message: event === null || event === void 0 ? void 0 : event.message,
+                            stack: event === null || event === void 0 ? void 0 : event.stack
+                        }, "".concat(keyName, " of type WindowEventMap"));
                     }, true);
                 })(keyName);
             });
