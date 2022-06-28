@@ -1,5 +1,6 @@
 import axios, {AxiosRequestConfig} from 'axios'
 import fp, {GetResult} from '@fingerprintjs/fingerprintjs'
+import {App} from 'vue'
 
 export interface ConsolePulgConfig<K extends keyof WindowEventMap> {
     [key: string]: any;
@@ -69,7 +70,7 @@ export type userAgentDataBrands = {
 }
 
 const ConsolePulg = {
-    install(app, options = {}) {
+    install(app:App, options = {}) {
         // @ts-ignore
         window.$ConsolePluginObjectClass = new PluginObjectClass(options)
     }
