@@ -1,5 +1,5 @@
 import axios, {AxiosRequestConfig} from 'axios'
-import fp,{GetResult} from '@fingerprintjs/fingerprintjs'
+import fp, {GetResult} from '@fingerprintjs/fingerprintjs'
 
 export interface ConsolePulgConfig<K extends keyof WindowEventMap> {
     [key: string]: any;
