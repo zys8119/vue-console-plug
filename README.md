@@ -43,3 +43,34 @@ export interface ConsolePulgConfig <K extends keyof WindowEventMap>{
     rules?:Array<(this:PluginObjectClass,data:MessageData)=>boolean>;// 返回true即上报，反之不上报
 }
 ```
+
+
+## 推荐配置
+
+```typescript
+import {ConsolePulgConfig } from 'ConsolePulg'
+
+export default {
+    AxiosConfig:{
+        baseURL:import.meta.env.VITE_Log_API,
+        url:'/log/up',
+        method:'post',
+    },
+    getCustomData(data, fp): Promise<any> {
+        const _this:any = this
+        const main:any = window.store.main
+        const {userinfo:{id:user_id, name:user_tag} = {} as any} = main
+        return Promise.resolve({
+            url:data.type === 'PV' ? '/log/pv' : _this.config.AxiosConfig?.url,
+            data: {
+                log:data,
+                user_id:user_id || fp.visitorId,
+                user_tag:user_tag || '未知',
+                type:data.type,
+                app_id:'5fa1ca70-f5e4-11ec-becd-a99a91db4246',
+                project_version:'v1.0.0',
+            }
+        })
+    }
+} as ConsolePulgConfig<keyof WindowEventMap>
+```

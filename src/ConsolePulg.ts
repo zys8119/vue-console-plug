@@ -1,12 +1,12 @@
 import axios, {AxiosRequestConfig} from 'axios'
-import {App} from 'vue'
+import fp,{GetResult} from '@fingerprintjs/fingerprintjs'
 
 export interface ConsolePulgConfig<K extends keyof WindowEventMap> {
     [key: string]: any;
 
     AxiosConfig?: AxiosRequestConfig;
 
-    getCustomData?(this: PluginObjectClass, data: MessageData): Promise<any>;// 获取自定义数据
+    getCustomData?(this: PluginObjectClass, data: MessageData, fp:GetResult): Promise<any>;// 获取自定义数据
     XHL_Success?: boolean;// 是否捕捉正常请求 默认开启
     XHL_Success_Error?: boolean;// 是否捕捉正常错误请求 默认开启
     XHL_Error?: boolean;// 是否捕捉错误请求 默认开启
@@ -22,15 +22,23 @@ export interface ConsolePulgConfig<K extends keyof WindowEventMap> {
 
 export interface MessageData {
     [key: string]: any;
-
     errorData: any;// 错误数据
     type: string;// 错误类型
+    hash: string;
+    host: string;
+    hostname: string;
+    origin: string;
+    href: string;
+    pathname: string;
+    port: string;
+    protocol: string;
     pageUrl: string;// 页面路径
     pageTitle: string;// 页面标题
     sessionStorage: any;// 缓存数据
     localStorage: any;// 缓存数据
     cookie: string;// cookie数据
     errorDataOrigin: any;// 错误源数据
+    visitorId: any;// 游客Id
     system?: MessageDataSystem;// 系统信息
     stack?: string;// 错误代码跟踪
 }
@@ -46,6 +54,7 @@ export interface MessageDataSystem {
     vendor: string;// 小贩
     onLine: boolean;// 网络是否在线
     language: string;// 当前页面语言
+    performance: any;// 客户端运行信息
     userAgentData: userAgentData;// 用户ua数据
 }
 
@@ -60,17 +69,17 @@ export type userAgentDataBrands = {
 }
 
 const ConsolePulg = {
-    install(Vue:App, options = {}) {
+    install(app, options = {}) {
         // @ts-ignore
-        window.$ConsolePluginObjectClass = new PluginObjectClass(Vue, options)
+        window.$ConsolePluginObjectClass = new PluginObjectClass(options)
     }
 }
 export default ConsolePulg
 
 class PluginObjectClass {
     config: ConsolePulgConfig<any> = {}
-
-    constructor(Vue:App, options: ConsolePulgConfig<any>) {
+    fp: GetResult = {} as GetResult
+    constructor(options: ConsolePulgConfig<any>) {
         try {
             this.config = {
                 // 默认不进行上报，需要配置上报服务器地址信息
@@ -100,7 +109,12 @@ class PluginObjectClass {
     /**
      * 初始化错误监听
      */
-    initErrorMonitor() {
+    async initErrorMonitor() {
+        this.fp = (await (await fp.load({
+            // monitoring: false
+        })).get({
+            extendedResult: true
+        } as any))
         try {
             const _this:PluginObjectClass = this
             this.onMessage(null, 'PV')
@@ -161,7 +175,7 @@ class PluginObjectClass {
                  * @send
                  */
                 const XMLHttpRequestOld_setRequestHeader = XMLHttpRequestOld.prototype.setRequestHeader
-                XMLHttpRequestOld.prototype.setRequestHeader = function(key:string, value:any,...args:any[]) {
+                XMLHttpRequestOld.prototype.setRequestHeader = function(key:string, value:any, ...args:any[]) {
                     this.requestHeaders = this.requestHeaders || {}
                     this.requestHeaders[key] = value
                     // @ts-ignore
@@ -235,7 +249,7 @@ class PluginObjectClass {
     /**
      * 错误消息拦截
      */
-    onMessage(errorData:any, type: string) {
+    async onMessage(errorData:any, type: string) {
         try {
             // 对上报服务器校验，防止不必要的错误请求
             if (!this.config.AxiosConfig ||
@@ -257,12 +271,21 @@ class PluginObjectClass {
             const data: MessageData = {
                 errorData,
                 type,
+                hash: location.hash,
+                host: location.host,
+                hostname: location.hostname,
+                origin: location.origin,
+                href: location.href,
+                pathname: location.pathname,
+                port: location.port,
+                protocol: location.protocol,
                 pageUrl: location.href,
                 pageTitle: document.title,
                 sessionStorage: window.sessionStorage,
                 localStorage: window.localStorage,
                 cookie: window.document.cookie,
-                errorDataOrigin: errorData
+                errorDataOrigin: errorData,
+                visitorId: this.fp.visitorId,
             }
             try {
                 data.system = <MessageDataSystem>{
@@ -276,6 +299,7 @@ class PluginObjectClass {
                     vendor: window.navigator.vendor,
                     onLine: window.navigator.onLine,
                     language: window.navigator.language,
+                    performance: window.performance,
                 }
                 if (this.config.userAgentData) {
                     try {
@@ -368,7 +392,7 @@ class PluginObjectClass {
                 } catch (e:any) {
                     data.stack = e.stack
                 }
-                this.config.getCustomData?.call(this, data).then(config => {
+                this.config.getCustomData?.call(this, data, this.fp).then(config => {
                     config = config || {}
                     axios({
                         ...this.config.AxiosConfig,
