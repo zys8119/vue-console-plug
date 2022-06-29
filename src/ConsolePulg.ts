@@ -145,7 +145,7 @@ class PluginObjectClass {
                             event,
                             message: event?.message,
                             stack: event?.stack
-                        }, `${keyName} of type WindowEventMap`)
+                        }, event?.message ? `${keyName} Static Resource` : `${keyName} of type WindowEventMap`)
                     }, true)
                 })(keyName)
             })

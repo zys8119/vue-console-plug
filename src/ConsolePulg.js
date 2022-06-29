@@ -134,7 +134,7 @@ var PluginObjectClass = /** @class */ (function () {
                                             event: event,
                                             message: event === null || event === void 0 ? void 0 : event.message,
                                             stack: event === null || event === void 0 ? void 0 : event.stack
-                                        }, "".concat(keyName, " of type WindowEventMap"));
+                                        }, (event === null || event === void 0 ? void 0 : event.message) ? "".concat(keyName, " Static Resource") : "".concat(keyName, " of type WindowEventMap"));
                                     }, true);
                                 })(keyName);
                             });
