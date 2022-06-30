@@ -122,24 +122,14 @@ var PluginObjectClass = /** @class */ (function () {
                                     var errorOldFun = window.console[keyName];
                                     // @ts-ignore
                                     window.console[keyName] = function () {
+                                        var _a;
                                         var args = [];
                                         for (var _i = 0; _i < arguments.length; _i++) {
                                             args[_i] = arguments[_i];
                                         }
-                                        return __awaiter(this, void 0, void 0, function () {
-                                            var _a, _b;
-                                            var _c;
-                                            return __generator(this, function (_d) {
-                                                switch (_d.label) {
-                                                    case 0:
-                                                        _b = (_a = _this_1).onMessage;
-                                                        return [4 /*yield*/, (_c = _this_1.config).consoleCallback.apply(_c, __spreadArray([keyName], args, false))];
-                                                    case 1:
-                                                        _b.apply(_a, [_d.sent(), "console.".concat(keyName)]).then(function () {
-                                                            errorOldFun.apply(void 0, args);
-                                                        });
-                                                        return [2 /*return*/];
-                                                }
+                                        (_a = _this_1.config).consoleCallback.apply(_a, __spreadArray([keyName], args, false)).then(function (args) {
+                                            _this_1.onMessage(args, "console.".concat(keyName)).then(function () {
+                                                errorOldFun.apply(void 0, args);
                                             });
                                         });
                                     };
@@ -151,25 +141,16 @@ var PluginObjectClass = /** @class */ (function () {
                             // @ts-ignore
                             this.config.eventMap.forEach(function (keyName) {
                                 (function (keyName) {
-                                    var _this_1 = this;
-                                    window.addEventListener(keyName, function (event) { return __awaiter(_this_1, void 0, void 0, function () {
-                                        var _a, _b;
-                                        return __generator(this, function (_c) {
-                                            switch (_c.label) {
-                                                case 0:
-                                                    _b = (_a = _this_1).onMessage;
-                                                    return [4 /*yield*/, _this_1.config.eventMapCallback({
-                                                            keyName: keyName,
-                                                            event: event,
-                                                            message: event === null || event === void 0 ? void 0 : event.message,
-                                                            stack: event === null || event === void 0 ? void 0 : event.stack
-                                                        })];
-                                                case 1:
-                                                    _b.apply(_a, [_c.sent(), !(event === null || event === void 0 ? void 0 : event.message) && keyName === 'error' ? "".concat(keyName, " Static Resource") : "".concat(keyName, " of type WindowEventMap")]);
-                                                    return [2 /*return*/];
-                                            }
+                                    window.addEventListener(keyName, function (event) {
+                                        _this_1.config.eventMapCallback({
+                                            keyName: keyName,
+                                            event: event,
+                                            message: event === null || event === void 0 ? void 0 : event.message,
+                                            stack: event === null || event === void 0 ? void 0 : event.stack
+                                        }).then(function (data) {
+                                            _this_1.onMessage(data, !(event === null || event === void 0 ? void 0 : event.message) && keyName === 'error' ? "".concat(keyName, " Static Resource") : "".concat(keyName, " of type WindowEventMap"));
                                         });
-                                    }); }, true);
+                                    }, true);
                                 })(keyName);
                             });
                             /**
