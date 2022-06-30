@@ -270,9 +270,9 @@ var PluginObjectClass = /** @class */ (function () {
                 },
                 bodyData: XHL.bodyData,
                 openArgs: XHL.openArgs,
-                requestStartTime: 0,
-                requestEndTime: 0,
-                requestTakeTime: 0,
+                requestStartTime: XHL.requestStartTime,
+                requestEndTime: XHL.requestEndTime,
+                requestTakeTime: XHL.requestTakeTime,
                 responseHeaders: XHL.getAllResponseHeaders(),
                 requestHeaders: XHL.requestHeaders,
                 stack: XHL.stack
