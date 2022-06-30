@@ -69,35 +69,48 @@ var ConsolePulg = {
 exports["default"] = ConsolePulg;
 var PluginObjectClass = /** @class */ (function () {
     function PluginObjectClass(options) {
+        var _this_1 = this;
         this.config = {};
         this.fp = {};
-        try {
-            this.config = __assign({ 
-                // 默认不进行上报，需要配置上报服务器地址信息
-                AxiosConfig: {}, XHL_Success: true, XHL_Success_Error: true, XHL_Error: true, userAgentData: true, system: true, XMLHttpRequest: true, console: true, consoleMap: ['error'], eventMap: ['error', 'messageerror', 'unhandledrejection', 'rejectionhandled'], getCustomData: function () {
-                    // @ts-ignore
-                    return Promise.resolve();
-                }, consoleCallback: function (keyName) {
-                    var data = [];
-                    for (var _i = 1; _i < arguments.length; _i++) {
-                        data[_i - 1] = arguments[_i];
-                    }
-                    return Promise.resolve(data);
-                }, eventMapCallback: function (data) {
-                    return Promise.resolve(data);
-                }, rules: null }, options);
-            this.initErrorMonitor();
-        }
-        catch (e) {
-            console.error('ConsolePulg', e);
-        }
+        (function () { return __awaiter(_this_1, void 0, void 0, function () {
+            var e_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        this.config = __assign({ 
+                            // 默认不进行上报，需要配置上报服务器地址信息
+                            AxiosConfig: {}, XHL_Success: true, XHL_Success_Error: true, XHL_Error: true, userAgentData: true, system: true, XMLHttpRequest: true, console: true, consoleMap: ['error'], eventMap: ['error', 'messageerror', 'unhandledrejection', 'rejectionhandled'], getCustomData: function () {
+                                // @ts-ignore
+                                return Promise.resolve();
+                            }, consoleCallback: function (keyName) {
+                                var data = [];
+                                for (var _i = 1; _i < arguments.length; _i++) {
+                                    data[_i - 1] = arguments[_i];
+                                }
+                                return Promise.resolve(data);
+                            }, eventMapCallback: function (data) {
+                                return Promise.resolve(data);
+                            }, rules: null }, options);
+                        return [4 /*yield*/, this.initErrorMonitor()];
+                    case 1:
+                        _a.sent();
+                        return [3 /*break*/, 3];
+                    case 2:
+                        e_1 = _a.sent();
+                        console.error('ConsolePulg', e_1);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        }); })();
     }
     /**
      * 初始化错误监听
      */
     PluginObjectClass.prototype.initErrorMonitor = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, _this_1, XMLHttpRequestOld_1, XMLHttpRequestOld_open_1, XMLHttpRequestOld_send_1, XMLHttpRequestOld_setRequestHeader_1;
+            var _a, _this_2, XMLHttpRequestOld_1, XMLHttpRequestOld_open_1, XMLHttpRequestOld_send_1, XMLHttpRequestOld_setRequestHeader_1;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -111,7 +124,7 @@ var PluginObjectClass = /** @class */ (function () {
                     case 2:
                         _a.fp = (_b.sent());
                         try {
-                            _this_1 = this;
+                            _this_2 = this;
                             this.onMessage(null, 'PV');
                             /**
                              * console
@@ -127,8 +140,8 @@ var PluginObjectClass = /** @class */ (function () {
                                         for (var _i = 0; _i < arguments.length; _i++) {
                                             args[_i] = arguments[_i];
                                         }
-                                        (_a = _this_1.config).consoleCallback.apply(_a, __spreadArray([keyName], args, false)).then(function (args) {
-                                            _this_1.onMessage(args, "console.".concat(keyName)).then(function () {
+                                        (_a = _this_2.config).consoleCallback.apply(_a, __spreadArray([keyName], args, false)).then(function (args) {
+                                            _this_2.onMessage(args, "console.".concat(keyName)).then(function () {
                                                 errorOldFun.apply(void 0, args);
                                             });
                                         });
@@ -142,13 +155,13 @@ var PluginObjectClass = /** @class */ (function () {
                             this.config.eventMap.forEach(function (keyName) {
                                 (function (keyName) {
                                     window.addEventListener(keyName, function (event) {
-                                        _this_1.config.eventMapCallback({
+                                        _this_2.config.eventMapCallback({
                                             keyName: keyName,
                                             event: event,
                                             message: event === null || event === void 0 ? void 0 : event.message,
                                             stack: event === null || event === void 0 ? void 0 : event.stack
                                         }).then(function (data) {
-                                            _this_1.onMessage(data, !(event === null || event === void 0 ? void 0 : event.message) && keyName === 'error' ? "".concat(keyName, " Static Resource") : "".concat(keyName, " of type WindowEventMap"));
+                                            _this_2.onMessage(data, !(event === null || event === void 0 ? void 0 : event.message) && keyName === 'error' ? "".concat(keyName, " Static Resource") : "".concat(keyName, " of type WindowEventMap"));
                                         });
                                     }, true);
                                 })(keyName);
@@ -156,7 +169,7 @@ var PluginObjectClass = /** @class */ (function () {
                             /**
                              * @请求错误(XMLHttpRequest)
                              */
-                            if (_this_1.config.XMLHttpRequest) {
+                            if (_this_2.config.XMLHttpRequest) {
                                 XMLHttpRequestOld_1 = window.XMLHttpRequest;
                                 XMLHttpRequestOld_open_1 = XMLHttpRequestOld_1.prototype.open;
                                 XMLHttpRequestOld_1.prototype.open = function () {
@@ -204,25 +217,25 @@ var PluginObjectClass = /** @class */ (function () {
                                     XHL.addEventListener('load', function (res) {
                                         _this_1.requestEndTime = Date.now();
                                         _this_1.requestTakeTime = _this_1.requestStartTime - _this_1.requestEndTime;
-                                        var XHL_Info = _this_1.getXHLMessageData(res, XHL);
+                                        var XHL_Info = _this_2.getXHLMessageData(res, XHL);
                                         if (res.target.status >= 200 && res.target.status < 300) {
                                             // 正常响应
-                                            if (_this_1.config.XHL_Success) {
-                                                _this_1.onMessage(XHL_Info, 'XHL_Success');
+                                            if (_this_2.config.XHL_Success) {
+                                                _this_2.onMessage(XHL_Info, 'XHL_Success');
                                             }
                                         }
                                         else {
                                             // 非正常响应
-                                            if (_this_1.config.XHL_Success_Error) {
-                                                _this_1.onMessage(XHL_Info, 'XHL_Success_Error');
+                                            if (_this_2.config.XHL_Success_Error) {
+                                                _this_2.onMessage(XHL_Info, 'XHL_Success_Error');
                                             }
                                         }
                                     });
                                     XHL.addEventListener('error', function (res) {
                                         _this_1.requestEndTime = Date.now();
                                         _this_1.requestTakeTime = _this_1.requestStartTime - _this_1.requestEndTime;
-                                        if (_this_1.config.XHL_Error) {
-                                            _this_1.onMessage(_this_1.getXHLMessageData(res, XHL), 'XHL_Error');
+                                        if (_this_2.config.XHL_Error) {
+                                            _this_2.onMessage(_this_2.getXHLMessageData(res, XHL), 'XHL_Error');
                                         }
                                     });
                                     return XHL;
