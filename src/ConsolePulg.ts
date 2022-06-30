@@ -135,10 +135,13 @@ export class PluginObjectClass {
                 (function(keyName:keyof typeof window.console) {
                     const errorOldFun = window.console[keyName]
                     // @ts-ignore
-                    window.console[keyName] = async function(...args) {
-                        _this.onMessage(await _this.config.consoleCallback(keyName, ...args), `console.${keyName}`).then(() => {
-                            (errorOldFun as Function)(...args)
+                    window.console[keyName] = function(...args) {
+                        _this.config.consoleCallback(keyName, ...args).then(args=>{
+                            _this.onMessage(args, `console.${keyName}`).then(() => {
+                                (errorOldFun as Function)(...args)
+                            })
                         })
+
                     }
                 })(keyName as keyof typeof window.console)
             })
@@ -148,14 +151,17 @@ export class PluginObjectClass {
             // @ts-ignore
             this.config.eventMap.forEach((keyName: string) => {
                 (function(keyName) {
-                    window.addEventListener(keyName, async (event: any) => {
-                        _this.onMessage(await _this.config.eventMapCallback({
+                    window.addEventListener(keyName,  (event: any) => {
+                        _this.config.eventMapCallback({
                             keyName,
                             event,
                             message: event?.message,
                             stack: event?.stack
-                        }), !event?.message && keyName === 'error' ?   `${keyName} Static Resource` : `${keyName} of type WindowEventMap`)
+                        }).then(data=>{
+                            _this.onMessage(data, !event?.message && keyName === 'error' ?   `${keyName} Static Resource` : `${keyName} of type WindowEventMap`)
+                        })
                     }, true)
+
                 })(keyName)
             })
             /**
