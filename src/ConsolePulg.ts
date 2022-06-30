@@ -18,6 +18,8 @@ export interface ConsolePulgConfig<K extends keyof WindowEventMap> {
     // 是否捕捉console映射, 默认监听只error
     consoleMap?: Array<string | 'error' | 'assert' | 'clear' | 'count' | 'countReset' | 'debug' | 'dir' | 'dirxml' | 'exception' | 'group' | 'groupCollapsed' | 'groupEnd' | 'info' | 'log' | 'table' | 'time' | 'timeEnd' | 'timeLog' | 'timeStamp' | 'trace' | 'warn'>;
     eventMap?: Array<K>;// 是否捕捉addEventListener事件映射, 默认监听只error
+    eventMapCallback?<T> (data:T): Promise<T>;// 事件回调
+    consoleCallback?<T> (...data:T[]): Promise<T[]>;// console回调
     rules?: Array<(this: PluginObjectClass, data: MessageData) => boolean> | null;// 返回false即上报，反之不上报
 }
 
@@ -77,7 +79,7 @@ const ConsolePulg = {
 }
 export default ConsolePulg
 
-class PluginObjectClass {
+export class PluginObjectClass {
     config: ConsolePulgConfig<any> = {}
     fp: GetResult = {} as GetResult
     constructor(options: ConsolePulgConfig<any>) {
@@ -97,6 +99,12 @@ class PluginObjectClass {
                 getCustomData() {
                     // @ts-ignore
                     return Promise.resolve()
+                },
+                consoleCallback(keyName, ...data ){
+                    return  Promise.resolve(data)
+                },
+                eventMapCallback(data ){
+                    return  Promise.resolve(data)
                 },
                 rules: null,
                 ...options,
@@ -127,8 +135,8 @@ class PluginObjectClass {
                 (function(keyName:keyof typeof window.console) {
                     const errorOldFun = window.console[keyName]
                     // @ts-ignore
-                    window.console[keyName] = function(...args) {
-                        _this.onMessage(args, `console.${keyName}`).then(() => {
+                    window.console[keyName] = async function(...args) {
+                        _this.onMessage(await _this.config.consoleCallback(keyName, ...args), `console.${keyName}`).then(() => {
                             (errorOldFun as Function)(...args)
                         })
                     }
@@ -140,12 +148,13 @@ class PluginObjectClass {
             // @ts-ignore
             this.config.eventMap.forEach((keyName: string) => {
                 (function(keyName) {
-                    window.addEventListener(keyName, (event: any) => {
-                        _this.onMessage({
+                    window.addEventListener(keyName, async (event: any) => {
+                        _this.onMessage(await _this.config.eventMapCallback({
+                            keyName,
                             event,
                             message: event?.message,
                             stack: event?.stack
-                        }, event?.message ?  `${keyName} of type WindowEventMap` : `${keyName} Static Resource`)
+                        }), !event?.message && keyName === 'error' ?   `${keyName} Static Resource` : `${keyName} of type WindowEventMap`)
                     }, true)
                 })(keyName)
             })
