@@ -175,6 +175,7 @@ export class PluginObjectClass {
                 const XMLHttpRequestOld_open = XMLHttpRequestOld.prototype.open
                 XMLHttpRequestOld.prototype.open = function(...args:any[]) {
                     this.openArgs = args
+                    this.requestStartTime = Date.now()
                     // @ts-ignore
                     XMLHttpRequestOld_open.call(this, ...args)
                 }
@@ -207,6 +208,8 @@ export class PluginObjectClass {
                         XHL.stack = e.stack
                     }
                     XHL.addEventListener('load', (res: any) => {
+                        this.requestEndTime = Date.now()
+                        this.requestTakeTime = this.requestStartTime - this.requestEndTime
                         const XHL_Info = _this.getXHLMessageData(res, XHL)
                         if (res.target.status >= 200 && res.target.status < 300) {
                             // 正常响应
@@ -221,6 +224,8 @@ export class PluginObjectClass {
                         }
                     })
                     XHL.addEventListener('error', (res:any) => {
+                        this.requestEndTime = Date.now()
+                        this.requestTakeTime = this.requestStartTime - this.requestEndTime
                         if (_this.config.XHL_Error) {
                             _this.onMessage(_this.getXHLMessageData(res, XHL), 'XHL_Error')
                         }
@@ -253,6 +258,9 @@ export class PluginObjectClass {
                 },
                 bodyData: XHL.bodyData,
                 openArgs: XHL.openArgs,
+                requestStartTime: 0,
+                requestEndTime: 0,
+                requestTakeTime: 0,
                 responseHeaders: XHL.getAllResponseHeaders(),
                 requestHeaders: XHL.requestHeaders,
                 stack: XHL.stack
