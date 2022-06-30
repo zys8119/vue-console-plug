@@ -211,7 +211,7 @@ export class PluginObjectClass {
                     }
                     XHL.addEventListener('load', (res: any) => {
                         XHL.requestEndTime = Date.now()
-                        XHL.requestTakeTime = XHL.requestStartTime - XHL.requestEndTime
+                        XHL.requestTakeTime = XHL.requestEndTime - XHL.requestStartTime
                         const XHL_Info = _this.getXHLMessageData(res, XHL)
                         if (res.target.status >= 200 && res.target.status < 300) {
                             // 正常响应
@@ -227,7 +227,7 @@ export class PluginObjectClass {
                     })
                     XHL.addEventListener('error', (res:any) => {
                         XHL.requestEndTime = Date.now()
-                        XHL.requestTakeTime = XHL.requestStartTime - XHL.requestEndTime
+                        XHL.requestTakeTime = XHL.requestEndTime - XHL.requestStartTime
                         if (_this.config.XHL_Error) {
                             _this.onMessage(_this.getXHLMessageData(res, XHL), 'XHL_Error')
                         }

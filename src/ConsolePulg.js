@@ -215,7 +215,7 @@ var PluginObjectClass = /** @class */ (function () {
                                     }
                                     XHL.addEventListener('load', function (res) {
                                         XHL.requestEndTime = Date.now();
-                                        XHL.requestTakeTime = XHL.requestStartTime - XHL.requestEndTime;
+                                        XHL.requestTakeTime = XHL.requestEndTime - XHL.requestStartTime;
                                         var XHL_Info = _this_2.getXHLMessageData(res, XHL);
                                         if (res.target.status >= 200 && res.target.status < 300) {
                                             // 正常响应
@@ -232,7 +232,7 @@ var PluginObjectClass = /** @class */ (function () {
                                     });
                                     XHL.addEventListener('error', function (res) {
                                         XHL.requestEndTime = Date.now();
-                                        XHL.requestTakeTime = XHL.requestStartTime - XHL.requestEndTime;
+                                        XHL.requestTakeTime = XHL.requestEndTime - XHL.requestStartTime;
                                         if (_this_2.config.XHL_Error) {
                                             _this_2.onMessage(_this_2.getXHLMessageData(res, XHL), 'XHL_Error');
                                         }
