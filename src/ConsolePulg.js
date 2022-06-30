@@ -201,7 +201,6 @@ var PluginObjectClass = /** @class */ (function () {
                                 };
                                 // @ts-ignore
                                 window.XMLHttpRequest = function () {
-                                    var _this_1 = this;
                                     var args = [];
                                     for (var _i = 0; _i < arguments.length; _i++) {
                                         args[_i] = arguments[_i];
@@ -215,8 +214,8 @@ var PluginObjectClass = /** @class */ (function () {
                                         XHL.stack = e.stack;
                                     }
                                     XHL.addEventListener('load', function (res) {
-                                        _this_1.requestEndTime = Date.now();
-                                        _this_1.requestTakeTime = _this_1.requestStartTime - _this_1.requestEndTime;
+                                        XHL.requestEndTime = Date.now();
+                                        XHL.requestTakeTime = XHL.requestStartTime - XHL.requestEndTime;
                                         var XHL_Info = _this_2.getXHLMessageData(res, XHL);
                                         if (res.target.status >= 200 && res.target.status < 300) {
                                             // 正常响应
@@ -232,8 +231,8 @@ var PluginObjectClass = /** @class */ (function () {
                                         }
                                     });
                                     XHL.addEventListener('error', function (res) {
-                                        _this_1.requestEndTime = Date.now();
-                                        _this_1.requestTakeTime = _this_1.requestStartTime - _this_1.requestEndTime;
+                                        XHL.requestEndTime = Date.now();
+                                        XHL.requestTakeTime = XHL.requestStartTime - XHL.requestEndTime;
                                         if (_this_2.config.XHL_Error) {
                                             _this_2.onMessage(_this_2.getXHLMessageData(res, XHL), 'XHL_Error');
                                         }
