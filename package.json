@@ -1,6 +1,6 @@
 {
   "name": "vue-console-pulg",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "vue 日志监控插件",
   "main": "src/ConsolePulg.js",
   "scripts": {

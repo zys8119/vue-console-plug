@@ -56,6 +56,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 exports.__esModule = true;
+exports.PluginObjectClass = void 0;
 var axios_1 = require("axios");
 var fingerprintjs_1 = require("@fingerprintjs/fingerprintjs");
 var ConsolePulg = {
@@ -76,6 +77,14 @@ var PluginObjectClass = /** @class */ (function () {
                 AxiosConfig: {}, XHL_Success: true, XHL_Success_Error: true, XHL_Error: true, userAgentData: true, system: true, XMLHttpRequest: true, console: true, consoleMap: ['error'], eventMap: ['error', 'messageerror', 'unhandledrejection', 'rejectionhandled'], getCustomData: function () {
                     // @ts-ignore
                     return Promise.resolve();
+                }, consoleCallback: function (keyName) {
+                    var data = [];
+                    for (var _i = 1; _i < arguments.length; _i++) {
+                        data[_i - 1] = arguments[_i];
+                    }
+                    return Promise.resolve(data);
+                }, eventMapCallback: function (data) {
+                    return Promise.resolve(data);
                 }, rules: null }, options);
             this.initErrorMonitor();
         }
@@ -117,8 +126,21 @@ var PluginObjectClass = /** @class */ (function () {
                                         for (var _i = 0; _i < arguments.length; _i++) {
                                             args[_i] = arguments[_i];
                                         }
-                                        _this_1.onMessage(args, "console.".concat(keyName)).then(function () {
-                                            errorOldFun.apply(void 0, args);
+                                        return __awaiter(this, void 0, void 0, function () {
+                                            var _a, _b;
+                                            var _c;
+                                            return __generator(this, function (_d) {
+                                                switch (_d.label) {
+                                                    case 0:
+                                                        _b = (_a = _this_1).onMessage;
+                                                        return [4 /*yield*/, (_c = _this_1.config).consoleCallback.apply(_c, __spreadArray([keyName], args, false))];
+                                                    case 1:
+                                                        _b.apply(_a, [_d.sent(), "console.".concat(keyName)]).then(function () {
+                                                            errorOldFun.apply(void 0, args);
+                                                        });
+                                                        return [2 /*return*/];
+                                                }
+                                            });
                                         });
                                     };
                                 })(keyName);
@@ -129,13 +151,25 @@ var PluginObjectClass = /** @class */ (function () {
                             // @ts-ignore
                             this.config.eventMap.forEach(function (keyName) {
                                 (function (keyName) {
-                                    window.addEventListener(keyName, function (event) {
-                                        _this_1.onMessage({
-                                            event: event,
-                                            message: event === null || event === void 0 ? void 0 : event.message,
-                                            stack: event === null || event === void 0 ? void 0 : event.stack
-                                        }, (event === null || event === void 0 ? void 0 : event.message) ? "".concat(keyName, " of type WindowEventMap") : "".concat(keyName, " Static Resource"));
-                                    }, true);
+                                    var _this_1 = this;
+                                    window.addEventListener(keyName, function (event) { return __awaiter(_this_1, void 0, void 0, function () {
+                                        var _a, _b;
+                                        return __generator(this, function (_c) {
+                                            switch (_c.label) {
+                                                case 0:
+                                                    _b = (_a = _this_1).onMessage;
+                                                    return [4 /*yield*/, _this_1.config.eventMapCallback({
+                                                            keyName: keyName,
+                                                            event: event,
+                                                            message: event === null || event === void 0 ? void 0 : event.message,
+                                                            stack: event === null || event === void 0 ? void 0 : event.stack
+                                                        })];
+                                                case 1:
+                                                    _b.apply(_a, [_c.sent(), !(event === null || event === void 0 ? void 0 : event.message) && keyName === 'error' ? "".concat(keyName, " Static Resource") : "".concat(keyName, " of type WindowEventMap")]);
+                                                    return [2 /*return*/];
+                                            }
+                                        });
+                                    }); }, true);
                                 })(keyName);
                             });
                             /**
@@ -411,3 +445,4 @@ var PluginObjectClass = /** @class */ (function () {
     };
     return PluginObjectClass;
 }());
+exports.PluginObjectClass = PluginObjectClass;
