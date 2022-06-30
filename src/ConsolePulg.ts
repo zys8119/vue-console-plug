@@ -83,36 +83,38 @@ export class PluginObjectClass {
     config: ConsolePulgConfig<any> = {}
     fp: GetResult = {} as GetResult
     constructor(options: ConsolePulgConfig<any>) {
-        try {
-            this.config = {
-                // 默认不进行上报，需要配置上报服务器地址信息
-                AxiosConfig: <AxiosRequestConfig>{},
-                XHL_Success: true,
-                XHL_Success_Error: true,
-                XHL_Error: true,
-                userAgentData: true,
-                system: true,
-                XMLHttpRequest: true,
-                console: true,
-                consoleMap: ['error'],
-                eventMap: ['error', 'messageerror', 'unhandledrejection', 'rejectionhandled'],
-                getCustomData() {
-                    // @ts-ignore
-                    return Promise.resolve()
-                },
-                consoleCallback(keyName, ...data ){
-                    return  Promise.resolve(data)
-                },
-                eventMapCallback(data ){
-                    return  Promise.resolve(data)
-                },
-                rules: null,
-                ...options,
+        (async ()=>{
+            try {
+                this.config = {
+                    // 默认不进行上报，需要配置上报服务器地址信息
+                    AxiosConfig: <AxiosRequestConfig>{},
+                    XHL_Success: true,
+                    XHL_Success_Error: true,
+                    XHL_Error: true,
+                    userAgentData: true,
+                    system: true,
+                    XMLHttpRequest: true,
+                    console: true,
+                    consoleMap: ['error'],
+                    eventMap: ['error', 'messageerror', 'unhandledrejection', 'rejectionhandled'],
+                    getCustomData() {
+                        // @ts-ignore
+                        return Promise.resolve()
+                    },
+                    consoleCallback(keyName, ...data ){
+                        return  Promise.resolve(data)
+                    },
+                    eventMapCallback(data ){
+                        return  Promise.resolve(data)
+                    },
+                    rules: null,
+                    ...options,
+                }
+                await this.initErrorMonitor()
+            } catch (e) {
+                console.error('ConsolePulg', e)
             }
-            this.initErrorMonitor()
-        } catch (e) {
-            console.error('ConsolePulg', e)
-        }
+        })()
     }
 
     /**
