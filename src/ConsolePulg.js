@@ -322,7 +322,8 @@ var PluginObjectClass = /** @class */ (function () {
                         localStorage: window.localStorage,
                         cookie: window.document.cookie,
                         errorDataOrigin: errorData,
-                        visitorId: this.fp.visitorId
+                        visitorId: this.fp.visitorId,
+                        browser_resolution: "".concat(screen.width, "x").concat(screen.height)
                     };
                     try {
                         data_1.system = {
