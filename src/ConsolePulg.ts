@@ -312,6 +312,7 @@ export class PluginObjectClass {
                 cookie: window.document.cookie,
                 errorDataOrigin: errorData,
                 visitorId: this.fp.visitorId,
+                browser_resolution:`${screen.width}x${screen.height}`,
             }
             try {
                 data.system = <MessageDataSystem>{
