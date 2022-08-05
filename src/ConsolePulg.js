@@ -268,6 +268,8 @@ var PluginObjectClass = /** @class */ (function () {
                     type: res.type
                 },
                 bodyData: XHL.bodyData,
+                status: XHL.status,
+                statusText: XHL.statusText,
                 openArgs: XHL.openArgs,
                 requestStartTime: XHL.requestStartTime,
                 requestEndTime: XHL.requestEndTime,
