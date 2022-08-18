@@ -71,13 +71,13 @@ export type userAgentDataBrands = {
     version: string;
 }
 
-const ConsolePulg = {
+const ConsolePlug = {
     install(app:App, options = {}) {
         // @ts-ignore
         window.$ConsolePluginObjectClass = new PluginObjectClass(options)
     }
 }
-export default ConsolePulg
+export default ConsolePlug
 
 export class PluginObjectClass {
     config: ConsolePulgConfig<any> = {}

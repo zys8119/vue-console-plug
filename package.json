@@ -1,8 +1,8 @@
 {
   "name": "vue-console-plug",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "description": "vue 日志监控插件",
-  "main": "src/ConsolePulg.js",
+  "main": "src/ConsolePlug.js",
   "scripts": {
     "build": "tsc"
   },

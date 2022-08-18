@@ -12,13 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PluginObjectClass = void 0;
 const axios_1 = require("axios");
 const fingerprintjs_1 = require("@fingerprintjs/fingerprintjs");
-const ConsolePulg = {
+const ConsolePlug = {
     install(app, options = {}) {
         // @ts-ignore
         window.$ConsolePluginObjectClass = new PluginObjectClass(options);
     }
 };
-exports.default = ConsolePulg;
+exports.default = ConsolePlug;
 class PluginObjectClass {
     constructor(options) {
         this.config = {};
@@ -368,4 +368,4 @@ class PluginObjectClass {
     }
 }
 exports.PluginObjectClass = PluginObjectClass;
-//# sourceMappingURL=ConsolePulg.js.map
+//# sourceMappingURL=ConsolePlug.js.map

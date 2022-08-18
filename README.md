@@ -2,16 +2,16 @@
 
 vue 日志监控插件
 
-## [查看代码](./src/ConsolePulg.ts)
+## [查看代码](./src/ConsolePlug.ts)
 
 ## 使用方式
 
 ```vue
 import vue from "vue"
 
-import ConsolePulg from "vue-console-pulg"
+import ConsolePlug from "vue-console-plug"
 
-vue.use(ConsolePulg,{
+vue.use(ConsolePlug,{
     AxiosConfig:{
         // baseURL:"http://localhost:81/",
         // url:"/Dome/Index/console",
@@ -48,18 +48,34 @@ export interface ConsolePulgConfig <K extends keyof WindowEventMap>{
 ## 推荐配置
 
 ```typescript
-import {ConsolePulgConfig } from 'ConsolePulg'
+import {ConsolePulgConfig } from 'vue-console-plug'
 
 export default {
+    consoleMap:['error', 'log'],
+    eventMap: ['error', 'messageerror', 'unhandledrejection', 'rejectionhandled', 'click'],
     AxiosConfig:{
-        baseURL:import.meta.env.VITE_Log_API,
+        // 修改成你的日志上报服务器
+        baseURL:import.meta.env.VITE_LOG_API,
         url:'/log/up',
         method:'post',
+    },
+    eventMapCallback(data: any): Promise<any> {
+        if (['click'].includes(data.keyName)) {
+            data.selector = data.event.path.reverse().map((e:HTMLElement) => {
+                const _id = e.id ? `#${e.id}` : ''
+                const _className = e.className ? `${e.className.split(' ').filter(e => /\S/.test(e)).map(e => `.${e}`)}` : ''
+                return `${e?.tagName?.toLocaleLowerCase() || ''}${_id}${_className}`
+            }).filter((e:any) => /\S/.test(e)).join('>')
+        }
+        return Promise.resolve(data)
     },
     getCustomData(data, fp): Promise<any> {
         const _this:any = this
         const main:any = window.store.main
         const {userinfo:{id:user_id, name:user_tag} = {} as any} = main
+        if (['XHL_Success_Error', 'XHL_Error', 'XHL_Success'].includes(data.type) && /\/log\/(up|pv)$/.test(data.errorData.data.openArgs[1])) {
+            return Promise.reject()
+        }
         return Promise.resolve({
             url:data.type === 'PV' ? '/log/pv' : _this.config.AxiosConfig?.url,
             data: {
@@ -67,7 +83,8 @@ export default {
                 user_id:user_id || fp.visitorId,
                 user_tag:user_tag || '未知',
                 type:data.type,
-                app_id:'5fa1ca70-f5e4-11ec-becd-a99a91db4246',
+                // 请修改你的应用id
+                app_id:'<%= app_id %>',
                 project_version:'v1.0.0',
             }
         })
