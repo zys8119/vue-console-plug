@@ -138,7 +138,7 @@ export class PluginObjectClass {
                     const errorOldFun = window.console[keyName]
                     // @ts-ignore
                     window.console[keyName] = function(...args) {
-                        _this.config.consoleCallback(keyName, ...args).then(args=>{
+                        _this?.config.consoleCallback?.(keyName, ...args).then(args=>{
                             _this.onMessage(args, `console.${keyName}`).then(() => {
                                 (errorOldFun as Function)(...args)
                             })
@@ -154,7 +154,7 @@ export class PluginObjectClass {
             this.config.eventMap.forEach((keyName: string) => {
                 (function(keyName) {
                     window.addEventListener(keyName,  (event: any) => {
-                        _this.config.eventMapCallback({
+                        _this.config.eventMapCallback?.({
                             keyName,
                             event,
                             message: event?.message,
