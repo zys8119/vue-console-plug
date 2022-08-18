@@ -4,23 +4,6 @@ vue 日志监控插件
 
 ## [查看代码](./src/ConsolePlug.ts)
 
-## 使用方式
-
-```vue
-import vue from "vue"
-
-import ConsolePlug from "vue-console-plug"
-
-vue.use(ConsolePlug,{
-    AxiosConfig:{
-        // baseURL:"http://localhost:81/",
-        // url:"/Dome/Index/console",
-        // method:"post",
-    },
-    // ****更多配置
-})
-```
-
 ## 更多配置
 
 ```typescript
@@ -45,7 +28,22 @@ export interface ConsolePulgConfig <K extends keyof WindowEventMap>{
 ```
 
 
-## 推荐配置
+## 引用
+
+main.ts
+
+```typescript
+import {createApp} from "vue"
+import vueConsolePlug from "vue-console-plug"
+
+const app = createApp(App)
+
+import vueConsolePlugConfigs from "./config"
+app.use(vueConsolePlug, vueConsolePlugConfigs)
+```
+
+
+config.ts
 
 ```typescript
 import {ConsolePulgConfig } from 'vue-console-plug'
@@ -54,7 +52,7 @@ export default {
     consoleMap:['error', 'log'],
     eventMap: ['error', 'messageerror', 'unhandledrejection', 'rejectionhandled', 'click'],
     AxiosConfig:{
-        // 修改成你的日志上报服务器
+        // 修改成你的日志上报服务器， 这里推荐环境变量方式
         baseURL:import.meta.env.VITE_LOG_API,
         url:'/log/up',
         method:'post',
@@ -90,4 +88,11 @@ export default {
         })
     }
 } as ConsolePulgConfig<keyof WindowEventMap>
+```
+
+推荐环境变量配置上报服务器地址 .env.development / .env.production
+
+```
+# Dev 环境
+VITE_LOG_API=您的日志上报服务器地址
 ```
