@@ -12,7 +12,7 @@ import axios, { AxiosRequestConfig } from "axios"
 export interface ConsolePlugConfig <K extends keyof WindowEventMap>{
     [key:string]:any;
     AxiosConfig?:AxiosRequestConfig;
-    getCustomData?(this:PluginObjectClass,data:MessageData):Promise<any>;// 获取自定义数据
+    getCustomData?(this:PluginObjectClass,data:MessageData, app:App):Promise<any>;// 获取自定义数据
     XHL_Success?:boolean;// 是否捕捉正常请求 默认开启
     XHL_Success_Error?:boolean;// 是否捕捉正常错误请求 默认开启
     XHL_Error?:boolean;// 是否捕捉错误请求 默认开启
@@ -49,11 +49,9 @@ config.ts
 import {ConsolePlugConfig } from 'vue-console-plug'
 
 export default {
-    consoleMap:['error', 'log'],
+    consoleMap:['error'],
     eventMap: ['error', 'messageerror', 'unhandledrejection', 'rejectionhandled', 'click'],
     AxiosConfig:{
-        // 修改成你的日志上报服务器， 这里推荐环境变量方式
-        baseURL:import.meta.env.VITE_LOG_API,
         url:'/log/up',
         method:'post',
     },
@@ -67,21 +65,34 @@ export default {
         }
         return Promise.resolve(data)
     },
-    getCustomData(data, fp): Promise<any> {
+    getCustomData(data, fp, app): Promise<any> {
+        //todo 区分vue 版本
+        const isVue3 = /^3\./.test(app.version)
+        //todo 修改成你的日志上报服务器， 这里推荐环境变量方式， 根据vue版本动态选择上报地址
+        const baseURL = isVue3 ? import.meta.env.VITE_LOG_API : process.env.VUE_APP_LOG_API
         const _this:any = this
-        const main:any = window.store.main
+        let main:any = window.store.main || {userinfo:{id:null, name:null}}
+        if (!isVue3) {
+            try {
+                main = JSON.parse(localStorage.getItem('userInfo') as any)
+            } catch (e) {/*err*/}
+            try {
+                main = JSON.parse(sessionStorage.getItem('userInfo')as any)
+            } catch (e) {/*err*/}
+        }
         const {userinfo:{id:user_id, name:user_tag} = {} as any} = main
-        if (['XHL_Success_Error', 'XHL_Error', 'XHL_Success'].includes(data.type) && /\/log\/(up|pv)$/.test(data.errorData.data.openArgs[1])) {
+        if (!baseURL || ['XHL_Success_Error', 'XHL_Error', 'XHL_Success'].includes(data.type) && /\/log\/(up|pv)$/.test(data.errorData.data.openArgs[1])) {
             return Promise.reject()
         }
         return Promise.resolve({
+            baseURL,
             url:data.type === 'PV' ? '/log/pv' : _this.config.AxiosConfig?.url,
             data: {
                 log:data,
                 user_id:user_id || fp.visitorId,
                 user_tag:user_tag || '未知',
                 type:data.type,
-                // 请修改你的应用id
+                //todo 请修改你的应用id
                 app_id:'<%= app_id %>',
                 project_version:'v1.0.0',
             }
@@ -93,6 +104,9 @@ export default {
 推荐环境变量配置上报服务器地址 .env.development / .env.production
 
 ```
-# Dev 环境
+# Dev 环境，vue2.x.x
+VUE_APP_LOG_API=您的日志上报服务器地址
+
+# Dev 环境，vue3.x.x
 VITE_LOG_API=您的日志上报服务器地址
 ```
