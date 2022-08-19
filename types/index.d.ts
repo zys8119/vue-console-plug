@@ -1,10 +1,10 @@
-import {ConsolePulgConfig} from "../src/ConsolePlug"
+import {ConsolePlugConfig} from "../src/ConsolePlug"
 export {
-    ConsolePulgConfig,
+    ConsolePlugConfig,
     MessageData,
     MessageDataSystem,
     userAgentData,
     userAgentDataBrands,
 } from "../src/ConsolePlug"
 
-export const install:(vue:any, options?: ConsolePulgConfig<keyof WindowEventMap>) => any;
+export const install:(vue:any, options?: ConsolePlugConfig<keyof WindowEventMap>) => any;

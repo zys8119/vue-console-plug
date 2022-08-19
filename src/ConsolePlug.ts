@@ -2,7 +2,7 @@ import axios, {AxiosRequestConfig} from 'axios'
 import fp, {GetResult} from '@fingerprintjs/fingerprintjs'
 import {App} from 'vue'
 
-export interface ConsolePulgConfig<K extends keyof WindowEventMap> {
+export interface ConsolePlugConfig<K extends keyof WindowEventMap> {
     [key: string]: any;
 
     AxiosConfig?: AxiosRequestConfig;
@@ -80,9 +80,9 @@ const ConsolePlug = {
 export default ConsolePlug
 
 export class PluginObjectClass {
-    config: ConsolePulgConfig<any> = {}
+    config: ConsolePlugConfig<any> = {}
     fp: GetResult = {} as GetResult
-    constructor(options: ConsolePulgConfig<any>) {
+    constructor(options: ConsolePlugConfig<any>) {
         (async ()=>{
             try {
                 this.config = {
