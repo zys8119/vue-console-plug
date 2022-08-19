@@ -7,7 +7,7 @@ export interface ConsolePlugConfig<K extends keyof WindowEventMap> {
 
     AxiosConfig?: AxiosRequestConfig;
 
-    getCustomData?(this: PluginObjectClass, data: MessageData, fp:GetResult): Promise<any>;// 获取自定义数据
+    getCustomData?(this: PluginObjectClass, data: MessageData, fp:GetResult, app:App): Promise<any>;// 获取自定义数据
     XHL_Success?: boolean;// 是否捕捉正常请求 默认开启
     XHL_Success_Error?: boolean;// 是否捕捉正常错误请求 默认开启
     XHL_Error?: boolean;// 是否捕捉错误请求 默认开启
@@ -74,7 +74,7 @@ export type userAgentDataBrands = {
 const ConsolePlug = {
     install(app:App, options = {}) {
         // @ts-ignore
-        window.$ConsolePluginObjectClass = new PluginObjectClass(options)
+        window.$ConsolePluginObjectClass = new PluginObjectClass(app, options)
     }
 }
 export default ConsolePlug
@@ -82,7 +82,7 @@ export default ConsolePlug
 export class PluginObjectClass {
     config: ConsolePlugConfig<any> = {}
     fp: GetResult = {} as GetResult
-    constructor(options: ConsolePlugConfig<any>) {
+    constructor(public app:App, options: ConsolePlugConfig<any>) {
         (async ()=>{
             try {
                 this.config = {
@@ -142,6 +142,8 @@ export class PluginObjectClass {
                             _this.onMessage(args, `console.${keyName}`).then(() => {
                                 (errorOldFun as Function)(...args)
                             })
+                        }).catch(()=>{
+                            // err
                         })
 
                     }
@@ -161,7 +163,9 @@ export class PluginObjectClass {
                             stack: event?.stack
                         }).then(data=>{
                             _this.onMessage(data, !event?.message && keyName === 'error' ?   `${keyName} Static Resource` : `${keyName} of type WindowEventMap`)
-                        })
+                        }).catch((()=>{
+                            // err
+                        }))
                     }, true)
 
                 })(keyName)
@@ -421,7 +425,7 @@ export class PluginObjectClass {
                 } catch (e:any) {
                     data.stack = e.stack
                 }
-                this.config.getCustomData?.call(this, data, this.fp).then(config => {
+                this.config.getCustomData?.call(this, data, this.fp, this.app).then(config => {
                     config = config || {}
                     axios({
                         ...this.config.AxiosConfig,

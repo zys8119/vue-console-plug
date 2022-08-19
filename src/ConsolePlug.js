@@ -15,12 +15,13 @@ const fingerprintjs_1 = require("@fingerprintjs/fingerprintjs");
 const ConsolePlug = {
     install(app, options = {}) {
         // @ts-ignore
-        window.$ConsolePluginObjectClass = new PluginObjectClass(options);
+        window.$ConsolePluginObjectClass = new PluginObjectClass(app, options);
     }
 };
 exports.default = ConsolePlug;
 class PluginObjectClass {
-    constructor(options) {
+    constructor(app, options) {
+        this.app = app;
         this.config = {};
         this.fp = {};
         (() => __awaiter(this, void 0, void 0, function* () {
@@ -71,6 +72,8 @@ class PluginObjectClass {
                                 _this.onMessage(args, `console.${keyName}`).then(() => {
                                     errorOldFun(...args);
                                 });
+                            }).catch(() => {
+                                // err
                             });
                         };
                     })(keyName);
@@ -90,7 +93,9 @@ class PluginObjectClass {
                                 stack: event === null || event === void 0 ? void 0 : event.stack
                             }).then(data => {
                                 _this.onMessage(data, !(event === null || event === void 0 ? void 0 : event.message) && keyName === 'error' ? `${keyName} Static Resource` : `${keyName} of type WindowEventMap`);
-                            });
+                            }).catch((() => {
+                                // err
+                            }));
                         }, true);
                     })(keyName);
                 });
@@ -348,7 +353,7 @@ class PluginObjectClass {
                     catch (e) {
                         data.stack = e.stack;
                     }
-                    (_a = this.config.getCustomData) === null || _a === void 0 ? void 0 : _a.call(this, data, this.fp).then(config => {
+                    (_a = this.config.getCustomData) === null || _a === void 0 ? void 0 : _a.call(this, data, this.fp, this.app).then(config => {
                         config = config || {};
                         (0, axios_1.default)(Object.assign(Object.assign(Object.assign({}, this.config.AxiosConfig), { data }), config)).then(res => {
                             resolve();
