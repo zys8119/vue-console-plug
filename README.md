@@ -1,4 +1,4 @@
-# vue-console-pulg
+# vue-console-plug
 
 vue 日志监控插件
 
