@@ -9,7 +9,7 @@ vue 日志监控插件
 ```typescript
 import axios, { AxiosRequestConfig } from "axios"
 
-export interface ConsolePulgConfig <K extends keyof WindowEventMap>{
+export interface ConsolePlugConfig <K extends keyof WindowEventMap>{
     [key:string]:any;
     AxiosConfig?:AxiosRequestConfig;
     getCustomData?(this:PluginObjectClass,data:MessageData):Promise<any>;// 获取自定义数据
@@ -46,7 +46,7 @@ app.use(vueConsolePlug, vueConsolePlugConfigs)
 config.ts
 
 ```typescript
-import {ConsolePulgConfig } from 'vue-console-plug'
+import {ConsolePlugConfig } from 'vue-console-plug'
 
 export default {
     consoleMap:['error', 'log'],
@@ -87,7 +87,7 @@ export default {
             }
         })
     }
-} as ConsolePulgConfig<keyof WindowEventMap>
+} as ConsolePlugConfig<keyof WindowEventMap>
 ```
 
 推荐环境变量配置上报服务器地址 .env.development / .env.production
