@@ -1,6 +1,7 @@
 import axios, {AxiosRequestConfig} from 'axios'
 import fp, {GetResult} from '@fingerprintjs/fingerprintjs'
 import {App} from 'vue'
+import {get, set} from 'lodash'
 
 export interface ConsolePlugConfig<K extends keyof WindowEventMap> {
     [key: string]: any;
@@ -83,7 +84,7 @@ export class PluginObjectClass {
     config: ConsolePlugConfig<any> = {}
     fp: GetResult = {} as GetResult
     constructor(public app:App, options: ConsolePlugConfig<any>) {
-        (async ()=>{
+        (async() => {
             try {
                 this.config = {
                     // 默认不进行上报，需要配置上报服务器地址信息
@@ -101,11 +102,11 @@ export class PluginObjectClass {
                         // @ts-ignore
                         return Promise.resolve()
                     },
-                    consoleCallback(keyName, ...data ){
-                        return  Promise.resolve(data)
+                    consoleCallback(keyName, ...data ) {
+                        return Promise.resolve(data)
                     },
-                    eventMapCallback(data ){
-                        return  Promise.resolve(data)
+                    eventMapCallback(data ) {
+                        return Promise.resolve(data)
                     },
                     rules: null,
                     ...options,
@@ -138,11 +139,11 @@ export class PluginObjectClass {
                     const errorOldFun = window.console[keyName]
                     // @ts-ignore
                     window.console[keyName] = function(...args) {
-                        _this?.config.consoleCallback?.(keyName, ...args).then(args=>{
+                        _this?.config.consoleCallback?.(keyName, ...args).then(args => {
                             _this.onMessage(args, `console.${keyName}`).then(() => {
                                 (errorOldFun as Function)(...args)
                             })
-                        }).catch(()=>{
+                        }).catch(() => {
                             // err
                         })
 
@@ -155,15 +156,15 @@ export class PluginObjectClass {
             // @ts-ignore
             this.config.eventMap.forEach((keyName: string) => {
                 (function(keyName) {
-                    window.addEventListener(keyName,  (event: any) => {
+                    window.addEventListener(keyName, (event: any) => {
                         _this.config.eventMapCallback?.({
                             keyName,
                             event,
-                            message: event?.message,
-                            stack: event?.stack
-                        }).then(data=>{
-                            _this.onMessage(data, !event?.message && keyName === 'error' ?   `${keyName} Static Resource` : `${keyName} of type WindowEventMap`)
-                        }).catch((()=>{
+                            message: event?.message || get(event,'error.message'),
+                            stack: event?.stack || get(event,'error.stack')
+                        }).then(data => {
+                            _this.onMessage(data, !event?.message && keyName === 'error' ? `${keyName} Static Resource` : `${keyName} of type WindowEventMap`)
+                        }).catch((() => {
                             // err
                         }))
                     }, true)
@@ -423,8 +424,20 @@ export class PluginObjectClass {
                 try {
                     throw Error('Stack')
                 } catch (e:any) {
-                    data.stack = e.stack
+                    set(data, 'stack',
+                        get(data,'errorData.data.stack') ||
+                        get(data,'errorDataOrigin.data.stack') ||
+                        get(data,'errorDataOrigin.event.reason.stack') ||
+                        get(data,'errorDataOrigin.data.event.reason.stack') ||
+                        e.stack
+                    )
                 }
+                set(data, 'errorData.data.message',
+                    get(data,'errorData.data.message') ||
+                    get(data,'errorDataOrigin.data.message') ||
+                    get(data,'errorDataOrigin.event.reason.message') ||
+                    get(data,'errorDataOrigin.data.event.reason.message')
+                )
                 this.config.getCustomData?.call(this, data, this.fp, this.app).then(config => {
                     config = config || {}
                     axios({

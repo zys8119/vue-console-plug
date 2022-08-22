@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PluginObjectClass = void 0;
 const axios_1 = require("axios");
 const fingerprintjs_1 = require("@fingerprintjs/fingerprintjs");
+const lodash_1 = require("lodash");
 const ConsolePlug = {
     install(app, options = {}) {
         // @ts-ignore
@@ -89,8 +90,8 @@ class PluginObjectClass {
                             (_b = (_a = _this.config).eventMapCallback) === null || _b === void 0 ? void 0 : _b.call(_a, {
                                 keyName,
                                 event,
-                                message: event === null || event === void 0 ? void 0 : event.message,
-                                stack: event === null || event === void 0 ? void 0 : event.stack
+                                message: (event === null || event === void 0 ? void 0 : event.message) || (0, lodash_1.get)(event, 'error.message'),
+                                stack: (event === null || event === void 0 ? void 0 : event.stack) || (0, lodash_1.get)(event, 'error.stack')
                             }).then(data => {
                                 _this.onMessage(data, !(event === null || event === void 0 ? void 0 : event.message) && keyName === 'error' ? `${keyName} Static Resource` : `${keyName} of type WindowEventMap`);
                             }).catch((() => {
@@ -351,8 +352,16 @@ class PluginObjectClass {
                         throw Error('Stack');
                     }
                     catch (e) {
-                        data.stack = e.stack;
+                        (0, lodash_1.set)(data, 'stack', (0, lodash_1.get)(data, 'errorData.data.stack') ||
+                            (0, lodash_1.get)(data, 'errorDataOrigin.data.stack') ||
+                            (0, lodash_1.get)(data, 'errorDataOrigin.event.reason.stack') ||
+                            (0, lodash_1.get)(data, 'errorDataOrigin.data.event.reason.stack') ||
+                            e.stack);
                     }
+                    (0, lodash_1.set)(data, 'errorData.data.message', (0, lodash_1.get)(data, 'errorData.data.message') ||
+                        (0, lodash_1.get)(data, 'errorDataOrigin.data.message') ||
+                        (0, lodash_1.get)(data, 'errorDataOrigin.event.reason.message') ||
+                        (0, lodash_1.get)(data, 'errorDataOrigin.data.event.reason.message'));
                     (_a = this.config.getCustomData) === null || _a === void 0 ? void 0 : _a.call(this, data, this.fp, this.app).then(config => {
                         config = config || {};
                         (0, axios_1.default)(Object.assign(Object.assign(Object.assign({}, this.config.AxiosConfig), { data }), config)).then(res => {

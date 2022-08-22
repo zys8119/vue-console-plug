@@ -1,6 +1,6 @@
 {
   "name": "vue-console-plug",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "description": "vue 日志监控插件",
   "main": "src/ConsolePlug.js",
   "scripts": {
@@ -15,10 +15,12 @@
   "typings": "types/index.d.ts",
   "dependencies": {
     "@fingerprintjs/fingerprintjs": "^3.3.3",
-    "axios": "^0.27.1"
+    "axios": "^0.27.1",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@babel/types": "^7.18.10",
+    "@types/lodash": "^4.14.184",
     "typescript": "^4.6.3",
     "vue": "^3.2.37"
   }
