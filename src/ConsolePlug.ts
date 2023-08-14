@@ -1,132 +1,36 @@
-import axios, {AxiosRequestConfig} from 'axios'
+import axios from 'axios'
 import fp, {GetResult} from '@fingerprintjs/fingerprintjs'
 import {App} from 'vue'
-import {get, set} from 'lodash'
-
-export interface ConsolePlugConfig<K extends keyof WindowEventMap> {
-    [key: string]: any;
-
-    AxiosConfig?: AxiosRequestConfig;
-
-    getCustomData?(this: PluginObjectClass, data: MessageData, fp:GetResult, app:App): Promise<any>;// 获取自定义数据
-    XHL_Success?: boolean;// 是否捕捉正常请求 默认开启
-    XHL_Success_Error?: boolean;// 是否捕捉正常错误请求 默认开启
-    XHL_Error?: boolean;// 是否捕捉错误请求 默认开启
-    userAgentData?: boolean;// 是否捕捉userAgentData 默认开启
-    system?: boolean;// 是否捕捉系统信息 默认开启
-    XMLHttpRequest?: boolean;// 是否捕捉XMLHttpRequest 默认开启
-    console?: boolean;// 是否捕捉console.error 默认开启
-    // 是否捕捉console映射, 默认监听只error
-    consoleMap?: Array<string | 'error' | 'assert' | 'clear' | 'count' | 'countReset' | 'debug' | 'dir' | 'dirxml' | 'exception' | 'group' | 'groupCollapsed' | 'groupEnd' | 'info' | 'log' | 'table' | 'time' | 'timeEnd' | 'timeLog' | 'timeStamp' | 'trace' | 'warn'>;
-    eventMap?: Array<K>;// 是否捕捉addEventListener事件映射, 默认监听只error
-    eventMapCallback?<T> (data:T): Promise<T>;// 事件回调
-    consoleCallback?<T> (...data:T[]): Promise<T[]>;// console回调
-    rules?: Array<(this: PluginObjectClass, data: MessageData) => boolean> | null;// 返回false即上报，反之不上报
-}
-
-export interface MessageData {
-    [key: string]: any;
-    errorData: any;// 错误数据
-    type: string;// 错误类型
-    hash: string;
-    host: string;
-    hostname: string;
-    origin: string;
-    href: string;
-    pathname: string;
-    port: string;
-    protocol: string;
-    pageUrl: string;// 页面路径
-    pageTitle: string;// 页面标题
-    sessionStorage: any;// 缓存数据
-    localStorage: any;// 缓存数据
-    cookie: string;// cookie数据
-    errorDataOrigin: any;// 错误源数据
-    visitorId: any;// 游客Id
-    system?: MessageDataSystem;// 系统信息
-    stack?: string;// 错误代码跟踪
-}
-
-export interface MessageDataSystem {
-    appVersion: string;// 应用版本
-    appCodeName: string;// 应用代码名称
-    userAgent: string;// 用户UA
-    appName: string;// 应用名称
-    platform: string;// 客户端平台
-    product: string;// 系统产品
-    productSub: string;// 系统子产品
-    vendor: string;// 小贩
-    onLine: boolean;// 网络是否在线
-    language: string;// 当前页面语言
-    performance: any;// 客户端运行信息
-    userAgentData: userAgentData;// 用户ua数据
-}
-
-export interface userAgentData {
-    mobile: string;
-    brands: userAgentDataBrands[]
-}
-
-export type userAgentDataBrands = {
-    brand: string;
-    version: string;
-}
-
-const ConsolePlug = {
-    install(app:App, options = {}) {
-        // @ts-ignore
-        window.$ConsolePluginObjectClass = new PluginObjectClass(app, options)
-    }
-}
-export default ConsolePlug
+import {get, set, merge} from 'lodash'
+import {UserConfig, MessageData, MessageDataSystem, UserAgentDataBrands} from "../types";
+import defaultConfig from "./defaultConfig";
 
 export class PluginObjectClass {
-    config: ConsolePlugConfig<any> = {}
+    config: UserConfig<any> = {}
     fp: GetResult = {} as GetResult
-    constructor(public app:App, options: ConsolePlugConfig<any>) {
-        (async() => {
-            try {
-                this.config = {
-                    // 默认不进行上报，需要配置上报服务器地址信息
-                    AxiosConfig: <AxiosRequestConfig>{},
-                    XHL_Success: true,
-                    XHL_Success_Error: true,
-                    XHL_Error: true,
-                    userAgentData: true,
-                    system: true,
-                    XMLHttpRequest: true,
-                    console: true,
-                    consoleMap: ['error'],
-                    eventMap: ['error', 'messageerror', 'unhandledrejection', 'rejectionhandled'],
-                    getCustomData() {
-                        // @ts-ignore
-                        return Promise.resolve()
-                    },
-                    consoleCallback(keyName, ...data ) {
-                        return Promise.resolve(data)
-                    },
-                    eventMapCallback(data ) {
-                        return Promise.resolve(data)
-                    },
-                    rules: null,
-                    ...options,
-                }
-                await this.initErrorMonitor()
-            } catch (e) {
-                console.error('ConsolePulg', e)
-            }
+    constructor(private app:App, private options: UserConfig<any>) {
+        ;(async ()=>{
+            await this.init()
         })()
+    }
+
+    private async init(){
+        try {
+            this.config = merge(defaultConfig, this.options)
+            this.config = await this.config.load?.(this.app, this.config) ||  this.config
+            this.fp = (await (await fp.load(this.config.fpConfig)).get({
+                extendedResult: true
+            } as any))
+            await this.initErrorMonitor()
+        } catch (e) {
+            console.error('ConsolePulg', e)
+        }
     }
 
     /**
      * 初始化错误监听
      */
-    async initErrorMonitor() {
-        this.fp = (await (await fp.load({
-            // monitoring: false
-        })).get({
-            extendedResult: true
-        } as any))
+    private async initErrorMonitor() {
         try {
             const _this:PluginObjectClass = this
             this.onMessage(null, 'PV')
@@ -248,7 +152,7 @@ export class PluginObjectClass {
     /**
      * 获取请求信息
      */
-    getXHLMessageData(res:any, XHL:any) {
+    private getXHLMessageData(res:any, XHL:any) {
         try {
             return {
                 response: {
@@ -339,7 +243,7 @@ export class PluginObjectClass {
                     try {
                         // @ts-ignore
                         const userAgentData = window.navigator.userAgentData || {}
-                        const brands = (userAgentData.brands || []).map((e:any) => (<userAgentDataBrands>{
+                        const brands = (userAgentData.brands || []).map((e:any) => (<UserAgentDataBrands>{
                             brand: e.brand,
                             version: e.version
                         }))
@@ -459,3 +363,9 @@ export class PluginObjectClass {
         }
     }
 }
+const ConsolePlug = {
+    install(app:App, options = {}) {
+        window.$vueConsolePlug = new PluginObjectClass(app, options)
+    }
+}
+export default ConsolePlug
