@@ -2,9 +2,11 @@
   "name": "vue-console-plug",
   "version": "0.1.0",
   "description": "vue 日志监控插件",
-  "main": "src/ConsolePlug.js",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "esbuild": "esbuild src/ConsolePlug.ts --bundle --watch --outfile=dist/index.js --loader:.ts=ts --tsconfig=tsconfig.json --platform=node",
+    "esm": "esbuild src/ConsolePlug.ts --bundle --watch --outfile=dist/index.js  --format=esm  --loader:.ts=ts --tsconfig=tsconfig.json --platform=node"
   },
   "repository": {
     "type": "git",
@@ -15,9 +17,11 @@
   "typings": "types/index.d.ts",
   "dependencies": {
     "@fingerprintjs/fingerprintjs": "^3.3.3",
-    "axios": "^0.27.1",
+    "@types/lodash": "^4.14.184",
+    "axios": "^1.4.0",
+    "debug": "^4.3.4",
     "lodash": "^4.17.21",
-    "@types/lodash": "^4.14.184"
+    "supports-color": "^9.4.0"
   },
   "devDependencies": {
     "@babel/types": "^7.18.10",
