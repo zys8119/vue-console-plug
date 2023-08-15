@@ -9,11 +9,10 @@ export class PluginObjectClass {
     config: UserConfig<any> = {}
     fp: GetResult = {} as GetResult
     urlMap = new Map()
-    isFinish = false
     constructor(private app:App, private options: UserConfig<any>) {
         ;(async ()=>{
             await this.init()
-            this.isFinish = true
+            await this.config.install?.call?.(this, app)
         })()
     }
 
@@ -173,7 +172,7 @@ export class PluginObjectClass {
                     XHL.addEventListener('load', (res: any) => {
                         XHL.requestEndTime = Date.now()
                         XHL.requestTakeTime = XHL.requestEndTime - XHL.requestStartTime
-                        const XHL_Info = _this.getXHLMessageData(res, XHL)
+                        const XHL_Info = _this.getXHLMessageData(res, XHL, 'xhr')
                         if (res.target.status >= 200 && res.target.status < 300) {
                             // 正常响应
                             if (_this.config.XHL_Success) {
@@ -190,7 +189,7 @@ export class PluginObjectClass {
                         XHL.requestEndTime = Date.now()
                         XHL.requestTakeTime = XHL.requestEndTime - XHL.requestStartTime
                         if (_this.config.XHL_Error) {
-                            _this.onMessage(_this.getXHLMessageData(res, XHL), 'XHL_Error')
+                            _this.onMessage(_this.getXHLMessageData(res, XHL, 'xhr'), 'XHL_Error')
                         }
                     })
                     return XHL
@@ -198,10 +197,129 @@ export class PluginObjectClass {
             }
             if (_this.config.fetch) {
                 const _fetch = window.fetch
-                console.log(888)
                 // @ts-ignore
-                window.fetch = async ()=>{
-                    console.log(6666)
+                window.fetch = async (input: RequestInfo, init?: RequestInit)=>{
+                    let stack = null
+                    try {
+                        throw Error('Stack')
+                    } catch (e:any) {
+                        stack = e.stack
+                    }
+                    const isString = typeof input === "string"
+                    const url =  isString ? input : input.url
+                    const requestInit = merge({
+                        url,
+                        method:'get'
+                    },isString ? {} : input as any)
+                    const requestStartTime = Date.now()
+                    return _fetch(url, requestInit).then(res=>{
+                        const requestEndTime = Date.now()
+                        const requestTakeTime = requestEndTime - requestStartTime
+                        return new Promise(resolve => {
+                            ;(async ()=>{
+                                const blob = await res.blob()
+                                const resMap = {
+                                    async blob(){
+                                        return blob
+                                    },
+                                    async text(){
+                                        return blob.text()
+                                    },
+                                    async json(){
+                                        return Promise.resolve(JSON.parse(await blob.text()))
+                                    },
+                                    async arrayBuffer(){
+                                        return blob.arrayBuffer()
+                                    }
+                                }
+                                for (const k in resMap){
+                                    res[k] = resMap[k]
+                                }
+                                // console.log(await res.text(), await res.blob())
+                                const XHL_Info = _this.getXHLMessageData({
+                                    target: {
+                                        readyState:4,
+                                        response:await resMap.text(),
+                                        responseText:await resMap.text(),
+                                        responseType:res.headers.get('content-type'),
+                                        responseURL:url,
+                                        responseXML:null,
+                                        withCredentials:requestInit.credentials,
+                                        status:res.status,
+                                        statusText:res.statusText,
+                                        type:'load'
+                                    },
+                                }, {
+                                    bodyData:await resMap.text(),
+                                    status:res.status,
+                                    statusText:res.statusText,
+                                    openArgs:[requestInit.method,url, true],
+                                    requestStartTime,
+                                    requestTakeTime,
+                                    requestEndTime,
+                                    getAllResponseHeaders(){
+                                        const results = {}
+                                        for (let [key, value] of res.headers as any) {
+                                            results[key] = value
+                                        }
+                                        return results
+                                    },
+                                    stack,
+                                    requestHeaders:requestInit.headers || {},
+                                },'fetch')
+                                if (res.status >= 200 && res.status < 300) {
+                                    // 正常响应
+                                    if (_this.config.XHL_Success) {
+                                        _this.onMessage(XHL_Info, 'XHL_Success')
+                                    }
+                                }else {
+                                    // 非正常响应
+                                    if (_this.config.XHL_Success_Error) {
+                                        _this.onMessage(XHL_Info, 'XHL_Success_Error')
+                                    }
+                                }
+                                resolve(res)
+                            })()
+                        })
+                    }).catch(err=>{
+                        const requestEndTime = Date.now()
+                        const requestTakeTime = requestEndTime - requestStartTime
+
+                        return new Promise((resolve, reject) => {
+                            ;(async ()=>{
+                                if (_this.config.XHL_Error) {
+                                    _this.onMessage(_this.getXHLMessageData({
+                                        target:{
+                                            readyState:4,
+                                            response:null,
+                                            responseText:null,
+                                            responseType:null,
+                                            responseURL:url,
+                                            responseXML:null,
+                                            withCredentials:requestInit.credentials,
+                                            // status:res.status,
+                                            // statusText:res.statusText,
+                                            type:'load'
+                                        }
+                                    }, {
+                                        bodyData:err.message,
+                                        status:404,
+                                        statusText:null,
+                                        openArgs:[requestInit.method,url, true],
+                                        requestStartTime,
+                                        requestTakeTime,
+                                        requestEndTime,
+                                        stack:err.stack,
+                                        getAllResponseHeaders(){
+                                            return {}
+                                        },
+                                        requestHeaders:requestInit.headers || {},
+                                    }), 'XHL_Error')
+                                }
+                                resolve(err)
+                            })()
+                        })
+                    })
                 }
             }
         } catch (e) {
@@ -213,7 +331,7 @@ export class PluginObjectClass {
     /**
      * 获取请求信息
      */
-    private getXHLMessageData(res:any, XHL:any) {
+    private getXHLMessageData(res:any, XHL:any, type:string = 'xhr') {
         try {
             return {
                 response: {
@@ -237,7 +355,8 @@ export class PluginObjectClass {
                 requestTakeTime: XHL.requestTakeTime,
                 responseHeaders: XHL.getAllResponseHeaders(),
                 requestHeaders: XHL.requestHeaders,
-                stack: XHL.stack
+                stack: XHL.stack,
+                type
             }
         } catch (e) {
             return {}
@@ -255,16 +374,6 @@ export class PluginObjectClass {
                 typeof this.config.AxiosConfig.method !== 'string') {
                 // @ts-ignore
                 return Promise.resolve()
-            }
-            // @ts-ignore
-            if (['XHL_Success', 'XHL', 'XHL_Error', 'XHL_Success_Error'].includes(type)) {
-                if (
-                    this.config.AxiosConfig.method.toLocaleLowerCase() === errorData.openArgs[0].toLocaleLowerCase() &&
-                    errorData.openArgs[1].toLocaleLowerCase().indexOf(this.config.AxiosConfig.url.toLocaleLowerCase()) > -1
-                ) {
-                    // @ts-ignore
-                    return Promise.resolve()
-                }
             }
             const data: MessageData = {
                 errorData,
@@ -407,7 +516,7 @@ export class PluginObjectClass {
                         get(data,'errorDataOrigin.data.event.reason.message')
                     )
                     const config = (await this.config.getCustomData?.call(this, data, this.fp, this.app)) || {}
-                    const axiosConfig = merge(this.config.AxiosConfig, {data}, config) as AxiosRequestConfig
+                    const axiosConfig = merge(this.config.AxiosConfig, {data:config.data || data}, config) as AxiosRequestConfig
                     const requestType = ['XHL_Success_Error', 'XHL_Error', 'XHL_Success']
                     const requestTypeReg = [...this.urlMap.keys()].map(k=>new RegExp(k))
                     const isUrlMap = requestTypeReg.find(e=> e.test(get(data, 'errorData.data.openArgs[1]')))
@@ -485,24 +594,6 @@ const ConsolePlug = {
         }catch (e) {
             window.$vueConsolePlug.config.errorHandler?.(e)
         }
-        // let html = null
-        // ;(function isFinish(){
-        //     if(!window.$vueConsolePlug.isFinish){
-        //         try {
-        //             throw new Error()
-        //         }catch (e) {
-        //            html = html || document.body.parentElement.innerHTML
-        //            document.write('&nbsp;')
-        //            setTimeout(()=>{
-        //                isFinish()
-        //            })
-        //         }
-        //     }else {
-        //         document.body.parentElement.innerHTML = html
-        //         app.mount('#app')
-        //     }
-        // })()
-
     }
 }
 export default ConsolePlug

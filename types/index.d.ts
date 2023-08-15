@@ -24,6 +24,7 @@ export interface UserConfig<K extends keyof WindowEventMap> {
     load?(app:App, config:UserConfig<K>): Promise<UserConfig<K>> | UserConfig<K> | void;// 初始化加载
     errorHandler?(err:any): void;// 错误回调
     beforeAxios?(axios:AxiosInstance): void;// axios 请求前, 可以进行请求拦截
+    install?(this: PluginObjectClass, app:App): void;// axios 请求前, 可以进行请求拦截
     vue?:{
         errorHandler?:boolean
         warnHandler?:boolean
