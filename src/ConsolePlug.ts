@@ -9,9 +9,11 @@ export class PluginObjectClass {
     config: UserConfig<any> = {}
     fp: GetResult = {} as GetResult
     urlMap = new Map()
+    isFinish = false
     constructor(private app:App, private options: UserConfig<any>) {
         ;(async ()=>{
             await this.init()
+            this.isFinish = true
         })()
     }
 
@@ -75,7 +77,7 @@ export class PluginObjectClass {
     private async initErrorMonitor() {
         try {
             const _this:PluginObjectClass = this
-            this.onMessage(null, 'PV')
+            await this.onMessage(null, 'PV')
             /**
              * console
              */
@@ -192,6 +194,14 @@ export class PluginObjectClass {
                         }
                     })
                     return XHL
+                }
+            }
+            if (_this.config.fetch) {
+                const _fetch = window.fetch
+                console.log(888)
+                // @ts-ignore
+                window.fetch = async ()=>{
+                    console.log(6666)
                 }
             }
         } catch (e) {
@@ -430,15 +440,16 @@ export class PluginObjectClass {
         const fns = []
         let newFn = fn
         const callBack = async function (...args){
-            await fn.apply(this,args)
+            const result = await fn.apply(this,args)
             for (let k = 0; k < fns.length; k++){
                 await fns[k].apply(this, args)
             }
+            return result
         }
         if(typeof oldFn === 'function'){
             newFn = async function (...args){
                 await oldFn.apply(this, args)
-                await callBack.apply(this, args)
+                return await callBack.apply(this, args)
             }
             set(object, path, newFn)
         }else {
@@ -474,6 +485,16 @@ const ConsolePlug = {
         }catch (e) {
             window.$vueConsolePlug.config.errorHandler?.(e)
         }
+        ;(function isFinish(){
+            if(!window.$vueConsolePlug.isFinish){
+                try {
+                    throw new Error()
+                }catch (e) {
+                    isFinish()
+                }
+            }
+        })()
+
     }
 }
 export default ConsolePlug

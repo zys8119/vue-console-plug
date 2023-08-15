@@ -12,6 +12,7 @@ export interface UserConfig<K extends keyof WindowEventMap> {
     userAgentData?: boolean;// 是否捕捉userAgentData 默认开启
     system?: boolean;// 是否捕捉系统信息 默认开启
     XMLHttpRequest?: boolean;// 是否捕捉XMLHttpRequest 默认开启
+    fetch?: boolean;// 是否捕捉fetch 默认开启
     console?: boolean;// 是否捕捉console.error 默认开启
     // 是否捕捉console映射, 默认监听只error
     consoleMap?: Array<string | 'error' | 'assert' | 'clear' | 'count' | 'countReset' | 'debug' | 'dir' | 'dirxml' | 'exception' | 'group' | 'groupCollapsed' | 'groupEnd' | 'info' | 'log' | 'table' | 'time' | 'timeEnd' | 'timeLog' | 'timeStamp' | 'trace' | 'warn'>;

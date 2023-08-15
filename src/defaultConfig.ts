@@ -9,6 +9,7 @@ export default {
     userAgentData: true,
     system: true,
     XMLHttpRequest: true,
+    fetch: true,
     console: true,
     consoleMap: ['error'],
     eventMap: ['error', 'messageerror', 'unhandledrejection', 'rejectionhandled'],
