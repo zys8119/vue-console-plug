@@ -1,5 +1,5 @@
 import { PluginObjectClass } from "../src/ConsolePlug"
-import {AxiosRequestConfig} from "axios";
+import {AxiosRequestConfig, AxiosInstance} from "axios";
 import {GetResult, LoadOptions} from "@fingerprintjs/fingerprintjs";
 import {App} from "vue";
 export interface UserConfig<K extends keyof WindowEventMap> {
@@ -20,7 +20,13 @@ export interface UserConfig<K extends keyof WindowEventMap> {
     getCustomData?(this: PluginObjectClass, data: MessageData, fp:GetResult, app:App): Promise<any>;// 获取自定义数据
     eventMapCallback?<T> (data:T): Promise<T>;// 事件回调
     consoleCallback?<T> (...data:T[]): Promise<T[]>;// console回调
-    load?(app:App, config:UserConfig<K>): Promise<UserConfig<K>> | UserConfig<K> | void;// console回调
+    load?(app:App, config:UserConfig<K>): Promise<UserConfig<K>> | UserConfig<K> | void;// 初始化加载
+    errorHandler?(err:any): void;// 错误回调
+    beforeAxios?(axios:AxiosInstance): void;// axios 请求前, 可以进行请求拦截
+    vue?:{
+        errorHandler?:boolean
+        warnHandler?:boolean
+    }
 }
 
 

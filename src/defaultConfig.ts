@@ -20,4 +20,8 @@ export default {
     eventMapCallback: data=>Promise.resolve(data),
     rules: null,
     fpConfig: {},
+    vue:{
+        errorHandler:true,
+        warnHandler:false
+    }
 } as UserConfig<keyof WindowEventMap>

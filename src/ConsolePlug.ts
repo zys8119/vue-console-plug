@@ -21,12 +21,53 @@ export class PluginObjectClass {
             this.fp = (await (await fp.load(this.config.fpConfig)).get({
                 extendedResult: true
             } as any))
+            await this.config.beforeAxios?.(axios)
             await this.initErrorMonitor()
         } catch (e) {
             console.error('ConsolePulg', e)
+            this.config.errorHandler?.(e)
         }
     }
 
+    private getXPath(element) {
+        if (element && element.nodeType === Node.ELEMENT_NODE) {
+            const xpath = [];
+            while (element.parentNode) {
+                let index = 1;
+                let sibling = element.previousSibling;
+                while (sibling) {
+                    if (sibling.nodeType === Node.ELEMENT_NODE && sibling.nodeName === element.nodeName) {
+                        index++;
+                    }
+                    sibling = sibling.previousSibling;
+                }
+                const tagName = element.nodeName.toLowerCase();
+                const position = index > 1 ? `[${index}]` : '';
+                xpath.unshift(`${tagName}${position}`);
+                element = element.parentNode;
+            }
+            return `/${xpath.join('/')}`;
+        }
+        return null;
+    }
+    private getSelector(element) {
+        if (!(element instanceof Element)) return;
+
+        let selector = '';
+        while (element) {
+            let tagSelector = element.tagName.toLowerCase();
+            let id = element.id ? `#${element.id}` : '';
+            let classes = element.className ? `.${element.className.replace(/\s+/g, '.')}` : '';
+
+            selector = `${tagSelector}${id}${classes}${selector}`;
+
+            if (element === document.body) break;
+            selector = ` > ${selector}`;
+            element = element.parentElement;
+        }
+
+        return selector;
+    }
     /**
      * 初始化错误监听
      */
@@ -61,7 +102,15 @@ export class PluginObjectClass {
             this.config.eventMap.forEach((keyName: string) => {
                 (function(keyName) {
                     window.addEventListener(keyName, (event: any) => {
+                        const type = Object.prototype.toString.call(event.target)
                         _this.config.eventMapCallback?.({
+                            target:{
+                                type,
+                                src:get(event, 'target.src') || get(event, 'target.href'),
+                                tag:get(event, 'target.tagName'),
+                                xPath:/\[object HTML\w+\]/.test(type) ? _this.getXPath(event.target) : null,
+                                selector:/\[object HTML\w+\]/.test(type) ? _this.getSelector(event.target) : null
+                            },
                             keyName,
                             event,
                             message: event?.message || get(event,'error.message'),
@@ -146,6 +195,7 @@ export class PluginObjectClass {
             }
         } catch (e) {
             console.error('ConsolePulg', e)
+            this.config.errorHandler?.(e)
         }
     }
 
@@ -258,6 +308,7 @@ export class PluginObjectClass {
                 }
             } catch (e) {
                 console.log('navigator 错误')
+                this.config.errorHandler?.(e)
             }
             switch (Object.prototype.toString.call(errorData)) {
                 case '[object Event]':
@@ -324,7 +375,7 @@ export class PluginObjectClass {
                 return Promise.resolve()
             }
             // @ts-ignore
-            return new Promise<void>(resolve => {
+            return new Promise<void>(async resolve => {
                 try {
                     throw Error('Stack')
                 } catch (e:any) {
@@ -342,30 +393,75 @@ export class PluginObjectClass {
                     get(data,'errorDataOrigin.event.reason.message') ||
                     get(data,'errorDataOrigin.data.event.reason.message')
                 )
-                this.config.getCustomData?.call(this, data, this.fp, this.app).then(config => {
-                    config = config || {}
-                    axios({
-                        ...this.config.AxiosConfig,
-                        data,
-                        ...config,
-                    }).then(res => {
-                        resolve()
-                    }).catch(() => {
-                        resolve()
-                    })
-                }).catch(() => {
-                    resolve()
+                const config = (await this.config.getCustomData?.call(this, data, this.fp, this.app)) || {}
+                await axios({
+                    ...this.config.AxiosConfig,
+                    data,
+                    ...config,
                 })
+                resolve()
             })
         } catch (e) {
             // @ts-ignore
             return Promise.resolve()
         }
     }
+
+    /**
+     * 函数重载
+     * @param object
+     * @param path
+     * @param fn
+     */
+    heavyLoadFn(object:any, path:string, fn:any){
+        const oldFn = get(object, path)
+        const fns = []
+        let newFn = fn
+        const callBack = async function (...args){
+            await fn.apply(this,args)
+            for (let k = 0; k < fns.length; k++){
+                await fns[k].apply(this, args)
+            }
+        }
+        if(typeof oldFn === 'function'){
+            newFn = async function (...args){
+                await oldFn.apply(this, args)
+                await callBack.apply(this, args)
+            }
+            set(object, path, newFn)
+        }else {
+            newFn = callBack
+        }
+        Object.defineProperty(object, path, {
+            get(){
+                return newFn
+            },
+            set(v){
+                if(typeof v === 'function'){
+                    fns.push(v)
+                }
+            },
+        })
+    }
 }
 const ConsolePlug = {
     install(app:App, options = {}) {
-        window.$vueConsolePlug = new PluginObjectClass(app, options)
+        try {
+            window.$vueConsolePlug = new PluginObjectClass(app, options)
+            ;['errorHandler', 'warnHandler'].forEach(path=>{
+                if(window.$vueConsolePlug.config.vue[path]){
+                    window.$vueConsolePlug.heavyLoadFn(app.config, path, (err:Error | string, instance, trace)=>{
+                        window.$vueConsolePlug.onMessage({
+                            stack:typeof err === 'string' ? err : err.stack,
+                            trace,
+                            instance
+                        },`vue-${path.replace(/Handler/,'')}`)
+                    })
+                }
+            })
+        }catch (e) {
+            window.$vueConsolePlug.config.errorHandler?.(e)
+        }
     }
 }
 export default ConsolePlug
