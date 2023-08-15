@@ -49,6 +49,8 @@ export interface MessageData {
     cookie: string;// cookie数据
     errorDataOrigin: any;// 错误源数据
     visitorId: any;// 游客Id
+    browser_resolution: any;// 浏览器分辨率
+    isVue3: boolean;// 是否是vue3
     system?: MessageDataSystem;// 系统信息
     stack?: string;// 错误代码跟踪
 }

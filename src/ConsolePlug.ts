@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, {AxiosRequestConfig} from 'axios'
 import fp, {GetResult} from '@fingerprintjs/fingerprintjs'
 import {App} from 'vue'
 import {get, set, merge} from 'lodash'
@@ -8,6 +8,7 @@ import defaultConfig from "./defaultConfig";
 export class PluginObjectClass {
     config: UserConfig<any> = {}
     fp: GetResult = {} as GetResult
+    urlMap = new Map()
     constructor(private app:App, private options: UserConfig<any>) {
         ;(async ()=>{
             await this.init()
@@ -240,8 +241,8 @@ export class PluginObjectClass {
         try {
             // 对上报服务器校验，防止不必要的错误请求
             if (!this.config.AxiosConfig ||
-                !this.config.AxiosConfig.url ||
-                !this.config.AxiosConfig.method) {
+                typeof this.config.AxiosConfig.baseURL !== 'string' ||
+                typeof this.config.AxiosConfig.method !== 'string') {
                 // @ts-ignore
                 return Promise.resolve()
             }
@@ -274,6 +275,7 @@ export class PluginObjectClass {
                 errorDataOrigin: errorData,
                 visitorId: this.fp.visitorId,
                 browser_resolution:`${screen.width}x${screen.height}`,
+                isVue3:/^3\./.test(this.app.version)
             }
             try {
                 data.system = <MessageDataSystem>{
@@ -375,7 +377,7 @@ export class PluginObjectClass {
                 return Promise.resolve()
             }
             // @ts-ignore
-            return new Promise<void>(async resolve => {
+            return new Promise<void>(async (resolve, reject )=> {
                 try {
                     throw Error('Stack')
                 } catch (e:any) {
@@ -387,19 +389,29 @@ export class PluginObjectClass {
                         e.stack
                     )
                 }
-                set(data, 'errorData.data.message',
-                    get(data,'errorData.data.message') ||
-                    get(data,'errorDataOrigin.data.message') ||
-                    get(data,'errorDataOrigin.event.reason.message') ||
-                    get(data,'errorDataOrigin.data.event.reason.message')
-                )
-                const config = (await this.config.getCustomData?.call(this, data, this.fp, this.app)) || {}
-                await axios({
-                    ...this.config.AxiosConfig,
-                    data,
-                    ...config,
-                })
-                resolve()
+                try {
+                    set(data, 'errorData.data.message',
+                        get(data,'errorData.data.message') ||
+                        get(data,'errorDataOrigin.data.message') ||
+                        get(data,'errorDataOrigin.event.reason.message') ||
+                        get(data,'errorDataOrigin.data.event.reason.message')
+                    )
+                    const config = (await this.config.getCustomData?.call(this, data, this.fp, this.app)) || {}
+                    const axiosConfig = merge(this.config.AxiosConfig, {data}, config) as AxiosRequestConfig
+                    const requestType = ['XHL_Success_Error', 'XHL_Error', 'XHL_Success']
+                    const requestTypeReg = [...this.urlMap.keys()].map(k=>new RegExp(k))
+                    const isUrlMap = requestTypeReg.find(e=> e.test(get(data, 'errorData.data.openArgs[1]')))
+                    if((requestType as any).includes(data.type) && isUrlMap){
+                        return reject()
+                    }
+                    this.urlMap.set(axiosConfig.url, true)
+                    await axios(axiosConfig)
+                    resolve()
+                } catch (e:any) {
+                    reject(e)
+                }
+            }).catch(()=>{
+                // 无需处理错误
             })
         } catch (e) {
             // @ts-ignore
