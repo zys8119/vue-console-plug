@@ -485,15 +485,23 @@ const ConsolePlug = {
         }catch (e) {
             window.$vueConsolePlug.config.errorHandler?.(e)
         }
-        ;(function isFinish(){
-            if(!window.$vueConsolePlug.isFinish){
-                try {
-                    throw new Error()
-                }catch (e) {
-                    isFinish()
-                }
-            }
-        })()
+        // let html = null
+        // ;(function isFinish(){
+        //     if(!window.$vueConsolePlug.isFinish){
+        //         try {
+        //             throw new Error()
+        //         }catch (e) {
+        //            html = html || document.body.parentElement.innerHTML
+        //            document.write('&nbsp;')
+        //            setTimeout(()=>{
+        //                isFinish()
+        //            })
+        //         }
+        //     }else {
+        //         document.body.parentElement.innerHTML = html
+        //         app.mount('#app')
+        //     }
+        // })()
 
     }
 }
