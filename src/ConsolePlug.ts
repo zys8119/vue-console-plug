@@ -217,30 +217,12 @@ export class PluginObjectClass {
                         const requestTakeTime = requestEndTime - requestStartTime
                         return new Promise(resolve => {
                             ;(async ()=>{
-                                const blob = await res.blob()
-                                const resMap = {
-                                    async blob(){
-                                        return blob
-                                    },
-                                    async text(){
-                                        return blob.text()
-                                    },
-                                    async json(){
-                                        return Promise.resolve(JSON.parse(await blob.text()))
-                                    },
-                                    async arrayBuffer(){
-                                        return blob.arrayBuffer()
-                                    }
-                                }
-                                for (const k in resMap){
-                                    res[k] = resMap[k]
-                                }
-                                // console.log(await res.text(), await res.blob())
+                                const responseText = await res.clone().text()
                                 const XHL_Info = _this.getXHLMessageData({
                                     target: {
                                         readyState:4,
-                                        response:await resMap.text(),
-                                        responseText:await resMap.text(),
+                                        response:responseText,
+                                        responseText:responseText,
                                         responseType:res.headers.get('content-type'),
                                         responseURL:url,
                                         responseXML:null,
@@ -250,7 +232,7 @@ export class PluginObjectClass {
                                         type:'load'
                                     },
                                 }, {
-                                    bodyData:await resMap.text(),
+                                    bodyData:responseText,
                                     status:res.status,
                                     statusText:res.statusText,
                                     openArgs:[requestInit.method,url, true],
@@ -297,14 +279,14 @@ export class PluginObjectClass {
                                             responseURL:url,
                                             responseXML:null,
                                             withCredentials:requestInit.credentials,
-                                            // status:res.status,
-                                            // statusText:res.statusText,
+                                            status:'failed',
+                                            statusText:'net::ERR_CONNECTION_REFUSED',
                                             type:'load'
                                         }
                                     }, {
                                         bodyData:err.message,
-                                        status:404,
-                                        statusText:null,
+                                        status:'failed',
+                                        statusText:'net::ERR_CONNECTION_REFUSED',
                                         openArgs:[requestInit.method,url, true],
                                         requestStartTime,
                                         requestTakeTime,
