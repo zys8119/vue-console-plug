@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "rollupConfig": "tsc -p build/tsconfig.json -w",
-    "build": "rollup -c build/rollup.config.js"
+    "rollupBuild": "rollup -c build/rollup.config.js",
+    "build": "npm run rollupBuild"
   },
   "repository": {
     "type": "git",
