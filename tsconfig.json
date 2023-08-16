@@ -1,14 +1,17 @@
 {
     "compilerOptions": {
-        "module": "esnext",
-        "target": "esnext",
-        "sourceMap": true,
+        "module": "ESNext",
+        "target": "ESNext",
+        "sourceMap": false,
+        "outDir": "./dist",
         "lib": [
             "es2015",
             "DOM"
         ],
+        "esModuleInterop": true,
         "moduleResolution": "Node"
     },
+    "include": ["src/**/*.ts"],
     "exclude": [
         "node_modules"
     ]
