@@ -23210,7 +23210,13 @@ var PluginObjectClass = /** @class */ (function () {
                 switch (_j.label) {
                     case 0:
                         _j.trys.push([0, 6, , 7]);
-                        this.config = lodashExports.merge(defaultConfig, this.options);
+                        this.config = lodashExports.merge(defaultConfig, this.options, {
+                            consoleMap: null,
+                            eventMap: null
+                        }, {
+                            consoleMap: this.options.consoleMap || defaultConfig.consoleMap,
+                            eventMap: this.options.eventMap || defaultConfig.eventMap
+                        });
                         _g = this;
                         return [4 /*yield*/, ((_b = (_a = this.config).load) === null || _b === void 0 ? void 0 : _b.call(_a, this.app, this.config))];
                     case 1:

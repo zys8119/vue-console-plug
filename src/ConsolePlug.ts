@@ -18,7 +18,13 @@ export class PluginObjectClass {
 
     private async init(){
         try {
-            this.config = merge(defaultConfig, this.options)
+            this.config = merge(defaultConfig, this.options, {
+                consoleMap:null,
+                eventMap:null
+            },{
+                consoleMap:this.options.consoleMap || defaultConfig.consoleMap,
+                eventMap:this.options.eventMap || defaultConfig.eventMap
+            })
             this.config = await this.config.load?.(this.app, this.config) ||  this.config
             this.fp = (await (await fp.load(this.config.fpConfig)).get({
                 extendedResult: true
