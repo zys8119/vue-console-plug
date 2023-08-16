@@ -1,3 +1,113 @@
+/******************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+/* global Reflect, Promise, SuppressedError, Symbol */
+
+
+var __assign = function() {
+    __assign = Object.assign || function __assign(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+
+function __awaiter(thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+}
+
+function __generator(thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+}
+
+function __values(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+}
+
+function __read(o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+}
+
+function __spreadArray(to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+}
+
+typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+};
+
 function bind(fn, thisArg) {
   return function wrap() {
     return fn.apply(thisArg, arguments);
@@ -3205,87 +3315,6 @@ axios.default = axios;
 
 // this module should only have a default export
 var axios$1 = axios;
-
-/******************************************************************************
-Copyright (c) Microsoft Corporation.
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-PERFORMANCE OF THIS SOFTWARE.
-***************************************************************************** */
-/* global Reflect, Promise, SuppressedError, Symbol */
-
-
-var __assign = function() {
-    __assign = Object.assign || function __assign(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-
-function __awaiter(thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-}
-
-function __generator(thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (g && (g = 0, op[0] && (_ = 0)), _) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-}
-
-function __spreadArray(to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-}
-
-typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
-    var e = new Error(message);
-    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
-};
 
 /**
  * FingerprintJS v3.4.2 - Copyright (c) FingerprintJS, Inc, 2023 (https://fingerprint.com)
@@ -23130,12 +23159,18 @@ var defaultConfig = {
     console: true,
     consoleMap: ['error'],
     eventMap: ['error', 'messageerror', 'unhandledrejection', 'rejectionhandled'],
-    getCustomData() {
+    getCustomData: function () {
         // @ts-ignore
         return Promise.resolve();
     },
-    consoleCallback: (keyName, ...data) => Promise.resolve(data),
-    eventMapCallback: data => Promise.resolve(data),
+    consoleCallback: function (keyName) {
+        var data = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            data[_i - 1] = arguments[_i];
+        }
+        return Promise.resolve(data);
+    },
+    eventMapCallback: function (data) { return Promise.resolve(data); },
     rules: null,
     fpConfig: {},
     vue: {
@@ -23144,319 +23179,403 @@ var defaultConfig = {
     }
 };
 
-class PluginObjectClass {
-    app;
-    options;
-    config = {};
-    fp = {};
-    urlMap = new Map();
-    constructor(app, options) {
+var PluginObjectClass = /** @class */ (function () {
+    function PluginObjectClass(app, options) {
+        var _this_1 = this;
         this.app = app;
         this.options = options;
-        (async () => {
-            await this.init();
-            await this.config.install?.call?.(this, app);
-        })();
+        this.config = {};
+        this.fp = {};
+        this.urlMap = new Map();
+        (function () { return __awaiter(_this_1, void 0, void 0, function () {
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0: return [4 /*yield*/, this.init()];
+                    case 1:
+                        _c.sent();
+                        return [4 /*yield*/, ((_b = (_a = this.config.install) === null || _a === void 0 ? void 0 : _a.call) === null || _b === void 0 ? void 0 : _b.call(_a, this, app))];
+                    case 2:
+                        _c.sent();
+                        return [2 /*return*/];
+                }
+            });
+        }); })();
     }
-    async init() {
-        try {
-            this.config = lodashExports.merge(defaultConfig, this.options);
-            this.config = await this.config.load?.(this.app, this.config) || this.config;
-            this.fp = (await (await index.load(this.config.fpConfig)).get({
-                extendedResult: true
-            }));
-            await this.config.beforeAxios?.(axios$1);
-            await this.initErrorMonitor();
-        }
-        catch (e) {
-            console.error('ConsolePulg', e);
-            this.config.errorHandler?.(e);
-        }
-    }
-    getXPath(element) {
+    PluginObjectClass.prototype.init = function () {
+        var _a, _b, _c, _d, _e, _f;
+        return __awaiter(this, void 0, void 0, function () {
+            var _g, _h, e_1;
+            return __generator(this, function (_j) {
+                switch (_j.label) {
+                    case 0:
+                        _j.trys.push([0, 6, , 7]);
+                        this.config = lodashExports.merge(defaultConfig, this.options);
+                        _g = this;
+                        return [4 /*yield*/, ((_b = (_a = this.config).load) === null || _b === void 0 ? void 0 : _b.call(_a, this.app, this.config))];
+                    case 1:
+                        _g.config = (_j.sent()) || this.config;
+                        _h = this;
+                        return [4 /*yield*/, index.load(this.config.fpConfig)];
+                    case 2: return [4 /*yield*/, (_j.sent()).get({
+                            extendedResult: true
+                        })];
+                    case 3:
+                        _h.fp = (_j.sent());
+                        return [4 /*yield*/, ((_d = (_c = this.config).beforeAxios) === null || _d === void 0 ? void 0 : _d.call(_c, axios$1))];
+                    case 4:
+                        _j.sent();
+                        return [4 /*yield*/, this.initErrorMonitor()];
+                    case 5:
+                        _j.sent();
+                        return [3 /*break*/, 7];
+                    case 6:
+                        e_1 = _j.sent();
+                        console.error('ConsolePulg', e_1);
+                        (_f = (_e = this.config).errorHandler) === null || _f === void 0 ? void 0 : _f.call(_e, e_1);
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    PluginObjectClass.prototype.getXPath = function (element) {
         if (element && element.nodeType === Node.ELEMENT_NODE) {
-            const xpath = [];
+            var xpath = [];
             while (element.parentNode) {
-                let index = 1;
-                let sibling = element.previousSibling;
+                var index = 1;
+                var sibling = element.previousSibling;
                 while (sibling) {
                     if (sibling.nodeType === Node.ELEMENT_NODE && sibling.nodeName === element.nodeName) {
                         index++;
                     }
                     sibling = sibling.previousSibling;
                 }
-                const tagName = element.nodeName.toLowerCase();
-                const position = index > 1 ? `[${index}]` : '';
-                xpath.unshift(`${tagName}${position}`);
+                var tagName = element.nodeName.toLowerCase();
+                var position = index > 1 ? "[".concat(index, "]") : '';
+                xpath.unshift("".concat(tagName).concat(position));
                 element = element.parentNode;
             }
-            return `/${xpath.join('/')}`;
+            return "/".concat(xpath.join('/'));
         }
         return null;
-    }
-    getSelector(element) {
+    };
+    PluginObjectClass.prototype.getSelector = function (element) {
         if (!(element instanceof Element))
             return;
-        let selector = '';
+        var selector = '';
         while (element) {
-            let tagSelector = element.tagName.toLowerCase();
-            let id = element.id ? `#${element.id}` : '';
-            let classes = element.className ? `.${element.className.replace(/\s+/g, '.')}` : '';
-            selector = `${tagSelector}${id}${classes}${selector}`;
+            var tagSelector = element.tagName.toLowerCase();
+            var id = element.id ? "#".concat(element.id) : '';
+            var classes = element.className ? ".".concat(element.className.replace(/\s+/g, '.')) : '';
+            selector = "".concat(tagSelector).concat(id).concat(classes).concat(selector);
             if (element === document.body)
                 break;
-            selector = ` > ${selector}`;
+            selector = " > ".concat(selector);
             element = element.parentElement;
         }
         return selector;
-    }
+    };
     /**
      * 初始化错误监听
      */
-    async initErrorMonitor() {
-        try {
-            const _this = this;
-            await this.onMessage(null, 'PV');
-            /**
-             * console
-             */
-            // @ts-ignore
-            this.config.consoleMap.forEach(keyName => {
-                (function (keyName) {
-                    const errorOldFun = window.console[keyName];
-                    // @ts-ignore
-                    window.console[keyName] = function (...args) {
-                        _this?.config.consoleCallback?.(keyName, ...args).then(args => {
-                            _this.onMessage(args, `console.${keyName}`).then(() => {
-                                errorOldFun(...args);
-                            });
-                        }).catch(() => {
-                            // err
-                        });
-                    };
-                })(keyName);
-            });
-            /**
-             * addEventListener
-             */
-            // @ts-ignore
-            this.config.eventMap.forEach((keyName) => {
-                (function (keyName) {
-                    window.addEventListener(keyName, (event) => {
-                        const type = Object.prototype.toString.call(event.target);
-                        _this.config.eventMapCallback?.({
-                            target: {
-                                type,
-                                src: lodashExports.get(event, 'target.src') || lodashExports.get(event, 'target.href'),
-                                tag: lodashExports.get(event, 'target.tagName'),
-                                xPath: /\[object HTML\w+\]/.test(type) ? _this.getXPath(event.target) : null,
-                                selector: /\[object HTML\w+\]/.test(type) ? _this.getSelector(event.target) : null
-                            },
-                            keyName,
-                            event,
-                            message: event?.message || lodashExports.get(event, 'error.message'),
-                            stack: event?.stack || lodashExports.get(event, 'error.stack')
-                        }).then(data => {
-                            _this.onMessage(data, !event?.message && keyName === 'error' ? `${keyName} Static Resource` : `${keyName} of type WindowEventMap`);
-                        }).catch((() => {
-                            // err
-                        }));
-                    }, true);
-                })(keyName);
-            });
-            /**
-             * @请求错误(XMLHttpRequest)
-             */
-            if (_this.config.XMLHttpRequest) {
-                const XMLHttpRequestOld = window.XMLHttpRequest;
-                /**
-                 * @open
-                 */
-                const XMLHttpRequestOld_open = XMLHttpRequestOld.prototype.open;
-                XMLHttpRequestOld.prototype.open = function (...args) {
-                    this.openArgs = args;
-                    this.requestStartTime = Date.now();
-                    // @ts-ignore
-                    XMLHttpRequestOld_open.call(this, ...args);
-                };
-                /**
-                 * @send
-                 */
-                const XMLHttpRequestOld_send = XMLHttpRequestOld.prototype.send;
-                XMLHttpRequestOld.prototype.send = function (e) {
-                    this.bodyData = e;
-                    // @ts-ignore
-                    XMLHttpRequestOld_send.call(this, e);
-                };
-                /**
-                 * @send
-                 */
-                const XMLHttpRequestOld_setRequestHeader = XMLHttpRequestOld.prototype.setRequestHeader;
-                XMLHttpRequestOld.prototype.setRequestHeader = function (key, value, ...args) {
-                    this.requestHeaders = this.requestHeaders || {};
-                    this.requestHeaders[key] = value;
-                    // @ts-ignore
-                    XMLHttpRequestOld_setRequestHeader.call(this, key, value, ...args);
-                };
-                // @ts-ignore
-                window.XMLHttpRequest = function (...args) {
-                    // @ts-ignore
-                    const XHL = new XMLHttpRequestOld(...args);
-                    try {
-                        throw Error('Stack');
-                    }
-                    catch (e) {
-                        XHL.stack = e.stack;
-                    }
-                    XHL.addEventListener('load', (res) => {
-                        XHL.requestEndTime = Date.now();
-                        XHL.requestTakeTime = XHL.requestEndTime - XHL.requestStartTime;
-                        const XHL_Info = _this.getXHLMessageData(res, XHL, 'xhr');
-                        if (res.target.status >= 200 && res.target.status < 300) {
-                            // 正常响应
-                            if (_this.config.XHL_Success) {
-                                _this.onMessage(XHL_Info, 'XHL_Success');
-                            }
-                        }
-                        else {
-                            // 非正常响应
-                            if (_this.config.XHL_Success_Error) {
-                                _this.onMessage(XHL_Info, 'XHL_Success_Error');
-                            }
-                        }
-                    });
-                    XHL.addEventListener('error', (res) => {
-                        XHL.requestEndTime = Date.now();
-                        XHL.requestTakeTime = XHL.requestEndTime - XHL.requestStartTime;
-                        if (_this.config.XHL_Error) {
-                            _this.onMessage(_this.getXHLMessageData(res, XHL, 'xhr'), 'XHL_Error');
-                        }
-                    });
-                    return XHL;
-                };
-            }
-            if (_this.config.fetch) {
-                const _fetch = window.fetch;
-                // @ts-ignore
-                window.fetch = async (input, init) => {
-                    let stack = null;
-                    try {
-                        throw Error('Stack');
-                    }
-                    catch (e) {
-                        stack = e.stack;
-                    }
-                    const isString = typeof input === "string";
-                    const url = isString ? input : input.url;
-                    const requestInit = lodashExports.merge({
-                        url,
-                        method: 'get'
-                    }, isString ? {} : input);
-                    const requestStartTime = Date.now();
-                    return _fetch(url, requestInit).then(res => {
-                        const requestEndTime = Date.now();
-                        const requestTakeTime = requestEndTime - requestStartTime;
-                        return new Promise(resolve => {
-                            ;
-                            (async () => {
-                                const responseText = await res.clone().text();
-                                const XHL_Info = _this.getXHLMessageData({
-                                    target: {
-                                        readyState: 4,
-                                        response: responseText,
-                                        responseText: responseText,
-                                        responseType: res.headers.get('content-type'),
-                                        responseURL: url,
-                                        responseXML: null,
-                                        withCredentials: requestInit.credentials,
-                                        status: res.status,
-                                        statusText: res.statusText,
-                                        type: 'load'
-                                    },
-                                }, {
-                                    bodyData: responseText,
-                                    status: res.status,
-                                    statusText: res.statusText,
-                                    openArgs: [requestInit.method, url, true],
-                                    requestStartTime,
-                                    requestTakeTime,
-                                    requestEndTime,
-                                    getAllResponseHeaders() {
-                                        const results = {};
-                                        for (let [key, value] of res.headers) {
-                                            results[key] = value;
-                                        }
-                                        return results;
-                                    },
-                                    stack,
-                                    requestHeaders: requestInit.headers || {},
-                                }, 'fetch');
-                                if (res.status >= 200 && res.status < 300) {
-                                    // 正常响应
-                                    if (_this.config.XHL_Success) {
-                                        _this.onMessage(XHL_Info, 'XHL_Success');
+    PluginObjectClass.prototype.initErrorMonitor = function () {
+        var _a, _b;
+        return __awaiter(this, void 0, void 0, function () {
+            var _this_2, XMLHttpRequestOld_1, XMLHttpRequestOld_open_1, XMLHttpRequestOld_send_1, XMLHttpRequestOld_setRequestHeader_1, _fetch_1, e_2;
+            var _this_1 = this;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        _c.trys.push([0, 2, , 3]);
+                        _this_2 = this;
+                        return [4 /*yield*/, this.onMessage(null, 'PV')
+                            /**
+                             * console
+                             */
+                            // @ts-ignore
+                        ];
+                    case 1:
+                        _c.sent();
+                        /**
+                         * console
+                         */
+                        // @ts-ignore
+                        this.config.consoleMap.forEach(function (keyName) {
+                            (function (keyName) {
+                                var errorOldFun = window.console[keyName];
+                                // @ts-ignore
+                                window.console[keyName] = function () {
+                                    var _a, _b;
+                                    var args = [];
+                                    for (var _i = 0; _i < arguments.length; _i++) {
+                                        args[_i] = arguments[_i];
                                     }
-                                }
-                                else {
-                                    // 非正常响应
-                                    if (_this.config.XHL_Success_Error) {
-                                        _this.onMessage(XHL_Info, 'XHL_Success_Error');
-                                    }
-                                }
-                                resolve(res);
-                            })();
+                                    (_b = _this_2 === null || _this_2 === void 0 ? void 0 : (_a = _this_2.config).consoleCallback) === null || _b === void 0 ? void 0 : _b.call.apply(_b, __spreadArray([_a, keyName], __read(args), false)).then(function (args) {
+                                        _this_2.onMessage(args, "console.".concat(keyName)).then(function () {
+                                            errorOldFun.apply(void 0, __spreadArray([], __read(args), false));
+                                        });
+                                    }).catch(function () {
+                                        // err
+                                    });
+                                };
+                            })(keyName);
                         });
-                    }).catch(err => {
-                        const requestEndTime = Date.now();
-                        const requestTakeTime = requestEndTime - requestStartTime;
-                        return new Promise((resolve, reject) => {
-                            ;
-                            (async () => {
-                                if (_this.config.XHL_Error) {
-                                    _this.onMessage(_this.getXHLMessageData({
+                        /**
+                         * addEventListener
+                         */
+                        // @ts-ignore
+                        this.config.eventMap.forEach(function (keyName) {
+                            (function (keyName) {
+                                window.addEventListener(keyName, function (event) {
+                                    var _a, _b;
+                                    var type = Object.prototype.toString.call(event.target);
+                                    (_b = (_a = _this_2.config).eventMapCallback) === null || _b === void 0 ? void 0 : _b.call(_a, {
                                         target: {
-                                            readyState: 4,
-                                            response: null,
-                                            responseText: null,
-                                            responseType: null,
-                                            responseURL: url,
-                                            responseXML: null,
-                                            withCredentials: requestInit.credentials,
-                                            status: 'failed',
-                                            statusText: 'net::ERR_CONNECTION_REFUSED',
-                                            type: 'load'
-                                        }
-                                    }, {
-                                        bodyData: err.message,
-                                        status: 'failed',
-                                        statusText: 'net::ERR_CONNECTION_REFUSED',
-                                        openArgs: [requestInit.method, url, true],
-                                        requestStartTime,
-                                        requestTakeTime,
-                                        requestEndTime,
-                                        stack: err.stack,
-                                        getAllResponseHeaders() {
-                                            return {};
+                                            type: type,
+                                            src: lodashExports.get(event, 'target.src') || lodashExports.get(event, 'target.href'),
+                                            tag: lodashExports.get(event, 'target.tagName'),
+                                            xPath: /\[object HTML\w+\]/.test(type) ? _this_2.getXPath(event.target) : null,
+                                            selector: /\[object HTML\w+\]/.test(type) ? _this_2.getSelector(event.target) : null
                                         },
-                                        requestHeaders: requestInit.headers || {},
-                                    }), 'XHL_Error');
-                                }
-                                resolve(err);
-                            })();
+                                        keyName: keyName,
+                                        event: event,
+                                        message: (event === null || event === void 0 ? void 0 : event.message) || lodashExports.get(event, 'error.message'),
+                                        stack: (event === null || event === void 0 ? void 0 : event.stack) || lodashExports.get(event, 'error.stack')
+                                    }).then(function (data) {
+                                        _this_2.onMessage(data, !(event === null || event === void 0 ? void 0 : event.message) && keyName === 'error' ? "".concat(keyName, " Static Resource") : "".concat(keyName, " of type WindowEventMap"));
+                                    }).catch((function () {
+                                        // err
+                                    }));
+                                }, true);
+                            })(keyName);
                         });
-                    });
-                };
-            }
-        }
-        catch (e) {
-            console.error('ConsolePulg', e);
-            this.config.errorHandler?.(e);
-        }
-    }
+                        /**
+                         * @请求错误(XMLHttpRequest)
+                         */
+                        if (_this_2.config.XMLHttpRequest) {
+                            XMLHttpRequestOld_1 = window.XMLHttpRequest;
+                            XMLHttpRequestOld_open_1 = XMLHttpRequestOld_1.prototype.open;
+                            XMLHttpRequestOld_1.prototype.open = function () {
+                                var args = [];
+                                for (var _i = 0; _i < arguments.length; _i++) {
+                                    args[_i] = arguments[_i];
+                                }
+                                this.openArgs = args;
+                                this.requestStartTime = Date.now();
+                                // @ts-ignore
+                                XMLHttpRequestOld_open_1.call.apply(XMLHttpRequestOld_open_1, __spreadArray([this], __read(args), false));
+                            };
+                            XMLHttpRequestOld_send_1 = XMLHttpRequestOld_1.prototype.send;
+                            XMLHttpRequestOld_1.prototype.send = function (e) {
+                                this.bodyData = e;
+                                // @ts-ignore
+                                XMLHttpRequestOld_send_1.call(this, e);
+                            };
+                            XMLHttpRequestOld_setRequestHeader_1 = XMLHttpRequestOld_1.prototype.setRequestHeader;
+                            XMLHttpRequestOld_1.prototype.setRequestHeader = function (key, value) {
+                                var args = [];
+                                for (var _i = 2; _i < arguments.length; _i++) {
+                                    args[_i - 2] = arguments[_i];
+                                }
+                                this.requestHeaders = this.requestHeaders || {};
+                                this.requestHeaders[key] = value;
+                                // @ts-ignore
+                                XMLHttpRequestOld_setRequestHeader_1.call.apply(XMLHttpRequestOld_setRequestHeader_1, __spreadArray([this, key, value], __read(args), false));
+                            };
+                            // @ts-ignore
+                            window.XMLHttpRequest = function () {
+                                var args = [];
+                                for (var _i = 0; _i < arguments.length; _i++) {
+                                    args[_i] = arguments[_i];
+                                }
+                                // @ts-ignore
+                                var XHL = new (XMLHttpRequestOld_1.bind.apply(XMLHttpRequestOld_1, __spreadArray([void 0], __read(args), false)))();
+                                try {
+                                    throw Error('Stack');
+                                }
+                                catch (e) {
+                                    XHL.stack = e.stack;
+                                }
+                                XHL.addEventListener('load', function (res) {
+                                    XHL.requestEndTime = Date.now();
+                                    XHL.requestTakeTime = XHL.requestEndTime - XHL.requestStartTime;
+                                    var XHL_Info = _this_2.getXHLMessageData(res, XHL, 'xhr');
+                                    if (res.target.status >= 200 && res.target.status < 300) {
+                                        // 正常响应
+                                        if (_this_2.config.XHL_Success) {
+                                            _this_2.onMessage(XHL_Info, 'XHL_Success');
+                                        }
+                                    }
+                                    else {
+                                        // 非正常响应
+                                        if (_this_2.config.XHL_Success_Error) {
+                                            _this_2.onMessage(XHL_Info, 'XHL_Success_Error');
+                                        }
+                                    }
+                                });
+                                XHL.addEventListener('error', function (res) {
+                                    XHL.requestEndTime = Date.now();
+                                    XHL.requestTakeTime = XHL.requestEndTime - XHL.requestStartTime;
+                                    if (_this_2.config.XHL_Error) {
+                                        _this_2.onMessage(_this_2.getXHLMessageData(res, XHL, 'xhr'), 'XHL_Error');
+                                    }
+                                });
+                                return XHL;
+                            };
+                        }
+                        if (_this_2.config.fetch) {
+                            _fetch_1 = window.fetch;
+                            // @ts-ignore
+                            window.fetch = function (input, init) { return __awaiter(_this_1, void 0, void 0, function () {
+                                var stack, isString, url, requestInit, requestStartTime;
+                                var _this_1 = this;
+                                return __generator(this, function (_a) {
+                                    stack = null;
+                                    try {
+                                        throw Error('Stack');
+                                    }
+                                    catch (e) {
+                                        stack = e.stack;
+                                    }
+                                    isString = typeof input === "string";
+                                    url = isString ? input : input.url;
+                                    requestInit = lodashExports.merge({
+                                        url: url,
+                                        method: 'get'
+                                    }, isString ? {} : input);
+                                    requestStartTime = Date.now();
+                                    return [2 /*return*/, _fetch_1(url, requestInit).then(function (res) {
+                                            var requestEndTime = Date.now();
+                                            var requestTakeTime = requestEndTime - requestStartTime;
+                                            return new Promise(function (resolve) {
+                                                (function () { return __awaiter(_this_1, void 0, void 0, function () {
+                                                    var responseText, XHL_Info;
+                                                    return __generator(this, function (_a) {
+                                                        switch (_a.label) {
+                                                            case 0: return [4 /*yield*/, res.clone().text()];
+                                                            case 1:
+                                                                responseText = _a.sent();
+                                                                XHL_Info = _this_2.getXHLMessageData({
+                                                                    target: {
+                                                                        readyState: 4,
+                                                                        response: responseText,
+                                                                        responseText: responseText,
+                                                                        responseType: res.headers.get('content-type'),
+                                                                        responseURL: url,
+                                                                        responseXML: null,
+                                                                        withCredentials: requestInit.credentials,
+                                                                        status: res.status,
+                                                                        statusText: res.statusText,
+                                                                        type: 'load'
+                                                                    },
+                                                                }, {
+                                                                    bodyData: responseText,
+                                                                    status: res.status,
+                                                                    statusText: res.statusText,
+                                                                    openArgs: [requestInit.method, url, true],
+                                                                    requestStartTime: requestStartTime,
+                                                                    requestTakeTime: requestTakeTime,
+                                                                    requestEndTime: requestEndTime,
+                                                                    getAllResponseHeaders: function () {
+                                                                        var e_3, _a;
+                                                                        var results = {};
+                                                                        try {
+                                                                            for (var _b = __values(res.headers), _c = _b.next(); !_c.done; _c = _b.next()) {
+                                                                                var _d = __read(_c.value, 2), key = _d[0], value = _d[1];
+                                                                                results[key] = value;
+                                                                            }
+                                                                        }
+                                                                        catch (e_3_1) { e_3 = { error: e_3_1 }; }
+                                                                        finally {
+                                                                            try {
+                                                                                if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+                                                                            }
+                                                                            finally { if (e_3) throw e_3.error; }
+                                                                        }
+                                                                        return results;
+                                                                    },
+                                                                    stack: stack,
+                                                                    requestHeaders: requestInit.headers || {},
+                                                                }, 'fetch');
+                                                                if (res.status >= 200 && res.status < 300) {
+                                                                    // 正常响应
+                                                                    if (_this_2.config.XHL_Success) {
+                                                                        _this_2.onMessage(XHL_Info, 'XHL_Success');
+                                                                    }
+                                                                }
+                                                                else {
+                                                                    // 非正常响应
+                                                                    if (_this_2.config.XHL_Success_Error) {
+                                                                        _this_2.onMessage(XHL_Info, 'XHL_Success_Error');
+                                                                    }
+                                                                }
+                                                                resolve(res);
+                                                                return [2 /*return*/];
+                                                        }
+                                                    });
+                                                }); })();
+                                            });
+                                        }).catch(function (err) {
+                                            var requestEndTime = Date.now();
+                                            var requestTakeTime = requestEndTime - requestStartTime;
+                                            return new Promise(function (resolve, reject) {
+                                                (function () { return __awaiter(_this_1, void 0, void 0, function () {
+                                                    return __generator(this, function (_a) {
+                                                        if (_this_2.config.XHL_Error) {
+                                                            _this_2.onMessage(_this_2.getXHLMessageData({
+                                                                target: {
+                                                                    readyState: 4,
+                                                                    response: null,
+                                                                    responseText: null,
+                                                                    responseType: null,
+                                                                    responseURL: url,
+                                                                    responseXML: null,
+                                                                    withCredentials: requestInit.credentials,
+                                                                    status: 'failed',
+                                                                    statusText: 'net::ERR_CONNECTION_REFUSED',
+                                                                    type: 'load'
+                                                                }
+                                                            }, {
+                                                                bodyData: err.message,
+                                                                status: 'failed',
+                                                                statusText: 'net::ERR_CONNECTION_REFUSED',
+                                                                openArgs: [requestInit.method, url, true],
+                                                                requestStartTime: requestStartTime,
+                                                                requestTakeTime: requestTakeTime,
+                                                                requestEndTime: requestEndTime,
+                                                                stack: err.stack,
+                                                                getAllResponseHeaders: function () {
+                                                                    return {};
+                                                                },
+                                                                requestHeaders: requestInit.headers || {},
+                                                            }), 'XHL_Error');
+                                                        }
+                                                        resolve(err);
+                                                        return [2 /*return*/];
+                                                    });
+                                                }); })();
+                                            });
+                                        })];
+                                });
+                            }); };
+                        }
+                        return [3 /*break*/, 3];
+                    case 2:
+                        e_2 = _c.sent();
+                        console.error('ConsolePulg', e_2);
+                        (_b = (_a = this.config).errorHandler) === null || _b === void 0 ? void 0 : _b.call(_a, e_2);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     /**
      * 获取请求信息
      */
-    getXHLMessageData(res, XHL, type = 'xhr') {
+    PluginObjectClass.prototype.getXHLMessageData = function (res, XHL, type) {
+        if (type === void 0) { type = 'xhr'; }
         try {
             return {
                 response: {
@@ -23481,210 +23600,258 @@ class PluginObjectClass {
                 responseHeaders: XHL.getAllResponseHeaders(),
                 requestHeaders: XHL.requestHeaders,
                 stack: XHL.stack,
-                type
+                type: type
             };
         }
         catch (e) {
             return {};
         }
-    }
+    };
     /**
      * 错误消息拦截
      */
-    async onMessage(errorData, type) {
-        try {
-            // 对上报服务器校验，防止不必要的错误请求
-            if (!this.config.AxiosConfig ||
-                typeof this.config.AxiosConfig.baseURL !== 'string' ||
-                typeof this.config.AxiosConfig.method !== 'string') {
-                // @ts-ignore
-                return Promise.resolve();
-            }
-            const data = {
-                errorData,
-                type,
-                hash: location.hash,
-                host: location.host,
-                hostname: location.hostname,
-                origin: location.origin,
-                href: location.href,
-                pathname: location.pathname,
-                port: location.port,
-                protocol: location.protocol,
-                pageUrl: location.href,
-                pageTitle: document.title,
-                sessionStorage: window.sessionStorage,
-                localStorage: window.localStorage,
-                cookie: window.document.cookie,
-                errorDataOrigin: errorData,
-                visitorId: this.fp.visitorId,
-                browser_resolution: `${screen.width}x${screen.height}`,
-                isVue3: /^3\./.test(this.app.version)
-            };
-            try {
-                data.system = {
-                    appVersion: window.navigator.appVersion,
-                    appCodeName: window.navigator.appCodeName,
-                    userAgent: window.navigator.userAgent,
-                    appName: window.navigator.appName,
-                    platform: window.navigator.platform,
-                    product: window.navigator.product,
-                    productSub: window.navigator.productSub,
-                    vendor: window.navigator.vendor,
-                    onLine: window.navigator.onLine,
-                    language: window.navigator.language,
-                    performance: window.performance,
-                };
-                if (this.config.userAgentData) {
-                    try {
+    PluginObjectClass.prototype.onMessage = function (errorData, type) {
+        var _a, _b;
+        return __awaiter(this, void 0, void 0, function () {
+            var data_1, userAgentData, brands;
+            var _this_1 = this;
+            return __generator(this, function (_c) {
+                try {
+                    // 对上报服务器校验，防止不必要的错误请求
+                    if (!this.config.AxiosConfig ||
+                        typeof this.config.AxiosConfig.baseURL !== 'string' ||
+                        typeof this.config.AxiosConfig.method !== 'string') {
                         // @ts-ignore
-                        const userAgentData = window.navigator.userAgentData || {};
-                        const brands = (userAgentData.brands || []).map((e) => ({
-                            brand: e.brand,
-                            version: e.version
-                        }));
-                        data.system.userAgentData = {
-                            mobile: userAgentData.mobile,
-                            // @ts-ignore
-                            brands,
-                        };
+                        return [2 /*return*/, Promise.resolve()];
                     }
-                    catch (e) {
-                        // err
-                    }
-                }
-            }
-            catch (e) {
-                console.log('navigator 错误');
-                this.config.errorHandler?.(e);
-            }
-            switch (Object.prototype.toString.call(errorData)) {
-                case '[object Event]':
-                    data.errorData = {
-                        ...data.errorData,
-                        timeStamp: data.errorData.timeStamp,
-                        type: data.errorData.type,
-                        path: data.errorData.path.map((el) => {
-                            return `【tagName】${(el.tagName || '').toLocaleLowerCase()}->【class】${el.className}->【id】${el.id}`;
-                        }),
-                        message: data.errorData.message,
-                        error: data.errorData.error,
-                        toStringType: '[object Event]',
+                    data_1 = {
+                        errorData: errorData,
+                        type: type,
+                        hash: location.hash,
+                        host: location.host,
+                        hostname: location.hostname,
+                        origin: location.origin,
+                        href: location.href,
+                        pathname: location.pathname,
+                        port: location.port,
+                        protocol: location.protocol,
+                        pageUrl: location.href,
+                        pageTitle: document.title,
+                        sessionStorage: window.sessionStorage,
+                        localStorage: window.localStorage,
+                        cookie: window.document.cookie,
+                        errorDataOrigin: errorData,
+                        visitorId: this.fp.visitorId,
+                        browser_resolution: "".concat(screen.width, "x").concat(screen.height),
+                        isVue3: /^3\./.test(this.app.version)
                     };
-                    break;
-                case '[object Arguments]':
-                    data.errorData = {};
-                    ([...errorData]).forEach((it, k) => {
-                        const dataObj = {
-                            toStringType: '[object Arguments]',
-                            error: null,
-                        };
-                        try {
-                            dataObj.error = it.error || it.stack || it;
-                        }
-                        catch (e) {
-                            dataObj.error = it;
-                        }
-                        data.errorData['error_' + k] = dataObj;
-                    });
-                    break;
-                case '[object Object]':
-                    data.errorData = {
-                        data: errorData,
-                        toStringType: '[object Object]',
-                    };
-                    break;
-                case '[object PromiseRejectionEvent]':
-                    data.errorData = {
-                        data: errorData.reason,
-                        toStringType: '[object PromiseRejectionEvent]',
-                    };
-                    break;
-                default:
                     try {
-                        data.errorData = {
-                            data: JSON.stringify(errorData),
-                            toStringType: '[object default]',
+                        data_1.system = {
+                            appVersion: window.navigator.appVersion,
+                            appCodeName: window.navigator.appCodeName,
+                            userAgent: window.navigator.userAgent,
+                            appName: window.navigator.appName,
+                            platform: window.navigator.platform,
+                            product: window.navigator.product,
+                            productSub: window.navigator.productSub,
+                            vendor: window.navigator.vendor,
+                            onLine: window.navigator.onLine,
+                            language: window.navigator.language,
+                            performance: window.performance,
                         };
+                        if (this.config.userAgentData) {
+                            try {
+                                userAgentData = window.navigator.userAgentData || {};
+                                brands = (userAgentData.brands || []).map(function (e) { return ({
+                                    brand: e.brand,
+                                    version: e.version
+                                }); });
+                                data_1.system.userAgentData = {
+                                    mobile: userAgentData.mobile,
+                                    // @ts-ignore
+                                    brands: brands,
+                                };
+                            }
+                            catch (e) {
+                                // err
+                            }
+                        }
                     }
                     catch (e) {
-                        data.errorData = {
-                            data: errorData,
-                            toStringType: '[object default]',
-                        };
+                        console.log('navigator 错误');
+                        (_b = (_a = this.config).errorHandler) === null || _b === void 0 ? void 0 : _b.call(_a, e);
                     }
-                    break;
-            }
-            /**
-             * 拦截规则校验
-             */
-            if (this.config.rules && this.config.rules.some(e => e.call(this, data))) {
-                // 符合条件中止
-                // @ts-ignore
-                return Promise.resolve();
-            }
-            // @ts-ignore
-            return new Promise(async (resolve, reject) => {
-                try {
-                    throw Error('Stack');
+                    switch (Object.prototype.toString.call(errorData)) {
+                        case '[object Event]':
+                            data_1.errorData = __assign(__assign({}, data_1.errorData), { timeStamp: data_1.errorData.timeStamp, type: data_1.errorData.type, path: data_1.errorData.path.map(function (el) {
+                                    return "\u3010tagName\u3011".concat((el.tagName || '').toLocaleLowerCase(), "->\u3010class\u3011").concat(el.className, "->\u3010id\u3011").concat(el.id);
+                                }), message: data_1.errorData.message, error: data_1.errorData.error, toStringType: '[object Event]' });
+                            break;
+                        case '[object Arguments]':
+                            data_1.errorData = {};
+                            (__spreadArray([], __read(errorData), false)).forEach(function (it, k) {
+                                var dataObj = {
+                                    toStringType: '[object Arguments]',
+                                    error: null,
+                                };
+                                try {
+                                    dataObj.error = it.error || it.stack || it;
+                                }
+                                catch (e) {
+                                    dataObj.error = it;
+                                }
+                                data_1.errorData['error_' + k] = dataObj;
+                            });
+                            break;
+                        case '[object Object]':
+                            data_1.errorData = {
+                                data: errorData,
+                                toStringType: '[object Object]',
+                            };
+                            break;
+                        case '[object PromiseRejectionEvent]':
+                            data_1.errorData = {
+                                data: errorData.reason,
+                                toStringType: '[object PromiseRejectionEvent]',
+                            };
+                            break;
+                        default:
+                            try {
+                                data_1.errorData = {
+                                    data: JSON.stringify(errorData),
+                                    toStringType: '[object default]',
+                                };
+                            }
+                            catch (e) {
+                                data_1.errorData = {
+                                    data: errorData,
+                                    toStringType: '[object default]',
+                                };
+                            }
+                            break;
+                    }
+                    /**
+                     * 拦截规则校验
+                     */
+                    if (this.config.rules && this.config.rules.some(function (e) { return e.call(_this_1, data_1); })) {
+                        // 符合条件中止
+                        // @ts-ignore
+                        return [2 /*return*/, Promise.resolve()];
+                    }
+                    // @ts-ignore
+                    return [2 /*return*/, new Promise(function (resolve, reject) { return __awaiter(_this_1, void 0, void 0, function () {
+                            var config, axiosConfig, requestType, requestTypeReg, isUrlMap, e_4;
+                            var _a;
+                            return __generator(this, function (_b) {
+                                switch (_b.label) {
+                                    case 0:
+                                        try {
+                                            throw Error('Stack');
+                                        }
+                                        catch (e) {
+                                            lodashExports.set(data_1, 'stack', lodashExports.get(data_1, 'errorData.data.stack') ||
+                                                lodashExports.get(data_1, 'errorDataOrigin.data.stack') ||
+                                                lodashExports.get(data_1, 'errorDataOrigin.event.reason.stack') ||
+                                                lodashExports.get(data_1, 'errorDataOrigin.data.event.reason.stack') ||
+                                                e.stack);
+                                        }
+                                        _b.label = 1;
+                                    case 1:
+                                        _b.trys.push([1, 4, , 5]);
+                                        lodashExports.set(data_1, 'errorData.data.message', lodashExports.get(data_1, 'errorData.data.message') ||
+                                            lodashExports.get(data_1, 'errorDataOrigin.data.message') ||
+                                            lodashExports.get(data_1, 'errorDataOrigin.event.reason.message') ||
+                                            lodashExports.get(data_1, 'errorDataOrigin.data.event.reason.message'));
+                                        return [4 /*yield*/, ((_a = this.config.getCustomData) === null || _a === void 0 ? void 0 : _a.call(this, data_1, this.fp, this.app))];
+                                    case 2:
+                                        config = (_b.sent()) || {};
+                                        axiosConfig = lodashExports.merge(this.config.AxiosConfig, { data: config.data || data_1 }, config);
+                                        requestType = ['XHL_Success_Error', 'XHL_Error', 'XHL_Success'];
+                                        requestTypeReg = __spreadArray([], __read(this.urlMap.keys()), false).map(function (k) { return new RegExp(k); });
+                                        isUrlMap = requestTypeReg.find(function (e) { return e.test(lodashExports.get(data_1, 'errorData.data.openArgs[1]')); });
+                                        if (requestType.includes(data_1.type) && isUrlMap) {
+                                            return [2 /*return*/, reject()];
+                                        }
+                                        this.urlMap.set(axiosConfig.url, true);
+                                        return [4 /*yield*/, axios$1(axiosConfig)];
+                                    case 3:
+                                        _b.sent();
+                                        resolve();
+                                        return [3 /*break*/, 5];
+                                    case 4:
+                                        e_4 = _b.sent();
+                                        reject(e_4);
+                                        return [3 /*break*/, 5];
+                                    case 5: return [2 /*return*/];
+                                }
+                            });
+                        }); }).catch(function () {
+                            // 无需处理错误
+                        })];
                 }
                 catch (e) {
-                    lodashExports.set(data, 'stack', lodashExports.get(data, 'errorData.data.stack') ||
-                        lodashExports.get(data, 'errorDataOrigin.data.stack') ||
-                        lodashExports.get(data, 'errorDataOrigin.event.reason.stack') ||
-                        lodashExports.get(data, 'errorDataOrigin.data.event.reason.stack') ||
-                        e.stack);
+                    // @ts-ignore
+                    return [2 /*return*/, Promise.resolve()];
                 }
-                try {
-                    lodashExports.set(data, 'errorData.data.message', lodashExports.get(data, 'errorData.data.message') ||
-                        lodashExports.get(data, 'errorDataOrigin.data.message') ||
-                        lodashExports.get(data, 'errorDataOrigin.event.reason.message') ||
-                        lodashExports.get(data, 'errorDataOrigin.data.event.reason.message'));
-                    const config = (await this.config.getCustomData?.call(this, data, this.fp, this.app)) || {};
-                    const axiosConfig = lodashExports.merge(this.config.AxiosConfig, { data: config.data || data }, config);
-                    const requestType = ['XHL_Success_Error', 'XHL_Error', 'XHL_Success'];
-                    const requestTypeReg = [...this.urlMap.keys()].map(k => new RegExp(k));
-                    const isUrlMap = requestTypeReg.find(e => e.test(lodashExports.get(data, 'errorData.data.openArgs[1]')));
-                    if (requestType.includes(data.type) && isUrlMap) {
-                        return reject();
-                    }
-                    this.urlMap.set(axiosConfig.url, true);
-                    await axios$1(axiosConfig);
-                    resolve();
-                }
-                catch (e) {
-                    reject(e);
-                }
-            }).catch(() => {
-                // 无需处理错误
+                return [2 /*return*/];
             });
-        }
-        catch (e) {
-            // @ts-ignore
-            return Promise.resolve();
-        }
-    }
+        });
+    };
     /**
      * 函数重载
      * @param object
      * @param path
      * @param fn
      */
-    heavyLoadFn(object, path, fn) {
-        const oldFn = lodashExports.get(object, path);
-        const fns = [];
-        let newFn = fn;
-        const callBack = async function (...args) {
-            const result = await fn.apply(this, args);
-            for (let k = 0; k < fns.length; k++) {
-                await fns[k].apply(this, args);
+    PluginObjectClass.prototype.heavyLoadFn = function (object, path, fn) {
+        var oldFn = lodashExports.get(object, path);
+        var fns = [];
+        var newFn = fn;
+        var callBack = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
             }
-            return result;
+            return __awaiter(this, void 0, void 0, function () {
+                var result, k;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, fn.apply(this, args)];
+                        case 1:
+                            result = _a.sent();
+                            k = 0;
+                            _a.label = 2;
+                        case 2:
+                            if (!(k < fns.length)) return [3 /*break*/, 5];
+                            return [4 /*yield*/, fns[k].apply(this, args)];
+                        case 3:
+                            _a.sent();
+                            _a.label = 4;
+                        case 4:
+                            k++;
+                            return [3 /*break*/, 2];
+                        case 5: return [2 /*return*/, result];
+                    }
+                });
+            });
         };
         if (typeof oldFn === 'function') {
-            newFn = async function (...args) {
-                await oldFn.apply(this, args);
-                return await callBack.apply(this, args);
+            newFn = function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i] = arguments[_i];
+                }
+                return __awaiter(this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, oldFn.apply(this, args)];
+                            case 1:
+                                _a.sent();
+                                return [4 /*yield*/, callBack.apply(this, args)];
+                            case 2: return [2 /*return*/, _a.sent()];
+                        }
+                    });
+                });
             };
             lodashExports.set(object, path, newFn);
         }
@@ -23692,35 +23859,38 @@ class PluginObjectClass {
             newFn = callBack;
         }
         Object.defineProperty(object, path, {
-            get() {
+            get: function () {
                 return newFn;
             },
-            set(v) {
+            set: function (v) {
                 if (typeof v === 'function') {
                     fns.push(v);
                 }
             },
         });
-    }
-}
-const ConsolePlug = {
-    install(app, options = {}) {
+    };
+    return PluginObjectClass;
+}());
+var ConsolePlug = {
+    install: function (app, options) {
+        var _a, _b;
+        if (options === void 0) { options = {}; }
         try {
             window.$vueConsolePlug = new PluginObjectClass(app, options);
-            ['errorHandler', 'warnHandler'].forEach(path => {
+            ['errorHandler', 'warnHandler'].forEach(function (path) {
                 if (window.$vueConsolePlug.config.vue[path]) {
-                    window.$vueConsolePlug.heavyLoadFn(app.config, path, (err, instance, trace) => {
+                    window.$vueConsolePlug.heavyLoadFn(app.config, path, function (err, instance, trace) {
                         window.$vueConsolePlug.onMessage({
                             stack: typeof err === 'string' ? err : err.stack,
-                            trace,
-                            instance
-                        }, `vue-${path.replace(/Handler/, '')}`);
+                            trace: trace,
+                            instance: instance
+                        }, "vue-".concat(path.replace(/Handler/, '')));
                     });
                 }
             });
         }
         catch (e) {
-            window.$vueConsolePlug.config.errorHandler?.(e);
+            (_b = (_a = window.$vueConsolePlug.config).errorHandler) === null || _b === void 0 ? void 0 : _b.call(_a, e);
         }
     }
 };

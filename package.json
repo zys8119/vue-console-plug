@@ -1,11 +1,11 @@
 {
   "name": "vue-console-plug",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "vue 日志监控插件",
   "main": "dist/index.js",
   "scripts": {
     "rollupConfig": "tsc -p build/tsconfig.json -w",
-    "rollupBuild": "rollup -c build/rollup.config.js",
+    "rollupBuild": "rollup -c build/rollup.config.js --bundleConfigAsCjs ",
     "build": "npm run rollupBuild"
   },
   "repository": {
@@ -16,7 +16,6 @@
   "license": "ISC",
   "typings": "types/index.d.ts",
   "devDependencies": {
-    "@babel/types": "^7.18.10",
     "@fingerprintjs/fingerprintjs": "^3.3.3",
     "@rollup/plugin-commonjs": "^25.0.4",
     "@rollup/plugin-json": "^6.0.0",

@@ -16,6 +16,6 @@ export default defineConfig({
             browser:true,
         }),
         json(),
-        commonjs()
+        commonjs(),
     ],
 });
